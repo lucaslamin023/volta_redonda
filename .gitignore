@@ -1,0 +1,142 @@
+# ==============================================================================
+# .gitignore - Pipeline ETL SICONFI / DW Medallion & Power BI (Vr City)
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. SEGREDOS & VARIÁVEIS DE AMBIENTE (NUNCA SUBIR AO GITHUB)
+# ------------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+*.p12
+credentials.json
+client_secret*.json
+docs/
+
+# ------------------------------------------------------------------------------
+# 2. PYTHON, VIRTUAL ENVS & UV
+# ------------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+.env/
+virtualenv/
+.uv/
+
+# Bytecode e caches compilados
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribuição e empacotamento
+build/
+dist/
+eggs/
+*.egg-info/
+src/*.egg-info/
+*.egg
+*.whl
+
+# Testes, cobertura e linters
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+.hypothesis/
+
+# ------------------------------------------------------------------------------
+# 3. BANCO DE DADOS LOCAL, DUMPS & VOLUMES
+# ------------------------------------------------------------------------------
+pgdata/
+postgres_data/
+*.dump
+*.bak
+*.backup
+*.sql.gz
+*.sqlite
+*.sqlite3
+*.db
+
+# ------------------------------------------------------------------------------
+# 4. LOGS & EXPORTAÇÕES TEMPORÁRIAS
+# ------------------------------------------------------------------------------
+logs/
+*.log
+tmp/
+temp/
+
+# ------------------------------------------------------------------------------
+# 5. POWER BI (.pbip / TMDL & Desktop)
+# ------------------------------------------------------------------------------
+# Caches locais e configurações de máquina do Power BI Project (.pbip / TMDL)
+# (Mantenha .pbip, .SemanticModel, .Report e arquivos .tmdl versionados!)
+**/*.abf
+**/localSettings.json
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+
+# ------------------------------------------------------------------------------
+# 6. SCRATCH / SCRIPTS TEMPORÁRIOS (OPCIONAL)
+# ------------------------------------------------------------------------------
+scratch/
+
+# ------------------------------------------------------------------------------
+# 7. IDEs & EDITORES DE CÓDIGO
+# ------------------------------------------------------------------------------
+# VS Code (preserva configurações compartilhadas da equipe)
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.vscode/*.log
+
+# JetBrains (PyCharm / DataGrip)
+.idea/
+*.iml
+*.iws
+
+# Visual Studio
+.vs/
+
+# Jupyter / IPython
+.ipynb_checkpoints/
+*-checkpoint.ipynb
+
+# ------------------------------------------------------------------------------
+# 8. ARQUIVOS DE SISTEMA OPERACIONAL
+# ------------------------------------------------------------------------------
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Linux
+*~
+.fuse_hidden*
+.directory

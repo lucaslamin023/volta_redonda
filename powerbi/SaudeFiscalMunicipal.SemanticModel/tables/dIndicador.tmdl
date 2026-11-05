@@ -1,0 +1,74 @@
+table dIndicador
+	lineageTag: 27fa3774-913e-423d-81b2-8f6fc3dd78a6
+
+	column sk_indicador
+		dataType: int64
+		isHidden
+		lineageTag: 824e8134-a13a-4be1-a4e6-1c8c99c3cd20
+		sourceColumn: sk_indicador
+
+	column codigo_indicador
+		dataType: string
+		lineageTag: 8ddf05ad-4338-4cf7-a164-c275c22bd792
+		sourceColumn: codigo_indicador
+
+	column nome
+		dataType: string
+		lineageTag: c8e72919-27a3-48c1-806b-a7a6944a6977
+		sourceColumn: nome
+
+	column descricao
+		dataType: string
+		lineageTag: 36634b26-6271-410d-9281-cd6fad741d87
+		sourceColumn: descricao
+
+	column formula_texto
+		dataType: string
+		lineageTag: 77eb58ab-76bf-4ebd-b70c-241b7778e56c
+		sourceColumn: formula_texto
+
+	column unidade
+		dataType: string
+		lineageTag: 0b0c91f4-e4da-46d9-b862-6e63619027ed
+		sourceColumn: unidade
+
+	column sentido_bom
+		dataType: string
+		lineageTag: e1fa0e33-c216-4f5f-97ed-3d88b1d7a54b
+		sourceColumn: sentido_bom
+
+	column valor_referencia
+		dataType: decimal
+		lineageTag: 06c01c7f-e48b-4348-a304-249cab78a1b6
+		sourceColumn: valor_referencia
+
+	column fonte_primaria
+		dataType: string
+		lineageTag: 9edaa35f-2430-4798-a3c8-3926471601d1
+		sourceColumn: fonte_primaria
+
+	column grupo
+		dataType: string
+		lineageTag: 696756fa-95e7-4d98-8847-3b7730bd48f0
+		sourceColumn: grupo
+
+	column camada_calculo
+		dataType: string
+		lineageTag: 3aab8661-76f3-4bda-a082-2b8f629f23c3
+		sourceColumn: camada_calculo
+
+	column ordem_exibicao
+		dataType: int64
+		lineageTag: 3af799f2-6c54-4149-a8c5-f0939c45f46e
+		summarizeBy: none
+		sourceColumn: ordem_exibicao
+
+	partition dIndicador = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_indicador"]}[Data]
+				in
+				    view_data
+

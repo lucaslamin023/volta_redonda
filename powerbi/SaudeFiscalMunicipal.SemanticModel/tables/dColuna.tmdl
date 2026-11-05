@@ -1,0 +1,44 @@
+table dColuna
+	lineageTag: cf6b09eb-17a4-4e56-b2cb-d667bf66d72f
+
+	column sk_coluna
+		dataType: int64
+		isHidden
+		lineageTag: e565302c-453c-4b27-9bf2-3ae64fcdbbad
+		sourceColumn: sk_coluna
+
+	column coluna_padrao
+		dataType: string
+		lineageTag: 254e44c5-c2dc-4d67-ac9e-3190679f01a7
+		sourceColumn: coluna_padrao
+
+	column coluna_origem_exemplo
+		dataType: string
+		lineageTag: 41aa30b6-c707-46a9-a447-f4d242e0200f
+		sourceColumn: coluna_origem_exemplo
+
+	column tipo_medida
+		dataType: string
+		lineageTag: 89eba4a1-804a-4a26-b157-f8c94785d117
+		sourceColumn: tipo_medida
+
+	column aditividade
+		dataType: string
+		lineageTag: a0af0b74-0e0e-408e-b916-fbde09044b97
+		sourceColumn: aditividade
+
+	column ordem_exibicao
+		dataType: int64
+		lineageTag: 3767fa0a-847a-4de1-acf3-002d10dd8608
+		summarizeBy: none
+		sourceColumn: ordem_exibicao
+
+	partition dColuna = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_coluna"]}[Data]
+				in
+				    view_data
+

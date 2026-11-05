@@ -1,0 +1,28 @@
+table dPoder
+	lineageTag: 06f541a6-064e-41f2-a107-313a9c3749e7
+
+	column sk_poder
+		dataType: int64
+		isHidden
+		lineageTag: 09649249-8e26-4567-ac08-b404a9eb5c2a
+		sourceColumn: sk_poder
+
+	column co_poder
+		dataType: string
+		lineageTag: c2be51f8-d133-4a2e-b6b9-34ad56005f70
+		sourceColumn: co_poder
+
+	column nome_poder
+		dataType: string
+		lineageTag: 297caca3-2f7c-4fe1-b606-fc8381b7a015
+		sourceColumn: nome_poder
+
+	partition dPoder = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_poder"]}[Data]
+				in
+				    view_data
+

@@ -1,0 +1,11 @@
+codigo_limite,descricao,percentual_limite,pct_alerta,pct_prudencial,tipo_limite,base_calculo,vigencia_ini,vigencia_fim,base_legal
+PESSOAL_EXECUTIVO,Despesa Total com Pessoal - Poder Executivo Municipal,54.000000,48.600000,51.300000,MAXIMO,RCL_AJUSTADA,2000-05-05,,"LRF arts. 19, III, 20, III, b, 22, par. unico e 59, par. 1, II"
+PESSOAL_LEGISLATIVO,Despesa Total com Pessoal - Poder Legislativo Municipal,6.000000,5.400000,5.700000,MAXIMO,RCL_AJUSTADA,2000-05-05,,"LRF arts. 19, III, 20, III, a, 22, par. unico e 59, par. 1, II"
+PESSOAL_TOTAL,Despesa Total com Pessoal - Ente Municipal Consolidado,60.000000,54.000000,57.000000,MAXIMO,RCL_AJUSTADA,2000-05-05,,"LRF arts. 19, III e 20, III"
+DCL_RCL,Dívida Consolidada Líquida sobre a RCL Ajustada,120.000000,108.000000,,MAXIMO,RCL_AJUSTADA,2001-12-21,,"Resolucao SF n. 40/2001, art. 3, II; LRF art. 59, par. 1, III"
+GARANTIAS_RCL,Garantias Concedidas sobre a RCL Ajustada,22.000000,19.800000,,MAXIMO,RCL_AJUSTADA,2001-12-26,,"Resolucao SF n. 43/2001, art. 9; LRF art. 59, par. 1, III"
+OP_CREDITO_RCL,Operações de Crédito Internas e Externas no Exercício sobre a RCL Ajustada,16.000000,14.400000,,MAXIMO,RCL_AJUSTADA,2001-12-26,,"Resolucao SF n. 43/2001, art. 7, I; LRF art. 59, par. 1, III"
+ARO_RCL,Operações de Crédito por Antecipação de Receita Orçamentária (ARO) sobre a RCL Ajustada,7.000000,6.300000,,MAXIMO,RCL_AJUSTADA,2001-12-26,,"Resolucao SF n. 43/2001, art. 10"
+EDUCACAO_MIN,Aplicação Mínima Constitucional em Manutenção e Desenvolvimento do Ensino (MDE),25.000000,,,MINIMO,RECEITA_IMPOSTOS,1988-10-05,,"CF/88, art. 212, caput"
+SAUDE_MIN,Aplicação Mínima Constitucional em Ações e Serviços Públicos de Saúde (ASPS),15.000000,,,MINIMO,RECEITA_IMPOSTOS,2012-01-13,,"CF/88, art. 198, par. 2, III; LC n. 141/2012, art. 7"
+CAIXA_LIQ_MIN,Disponibilidade de Caixa Líquida (Suficiência Financeira antes da Inscrição de RPNP),0.000000,,,MINIMO,CAIXA_LIQUIDA,2000-05-05,,"LRF art. 42 e art. 55, III, a"

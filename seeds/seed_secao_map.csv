@@ -1,0 +1,73 @@
+fonte,anexo_codigo,rotulo_origem,secao_codigo,secao_nome,ordem_exibicao
+DCA,DCA-I-AB,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-AB,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-C,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-C,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-D,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-D,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-E,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-E,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-F,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-F,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-G,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-G,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-HI,Padrão,PADRAO,Quadro Principal,1
+DCA,DCA-I-HI,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-01,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-01,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-02,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-02,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-03,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-03,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-04,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-04,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-05,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-05,Padrao,PADRAO,Quadro Principal,1
+RGF,RGF-06,Padrão,PADRAO,Quadro Principal,1
+RGF,RGF-06,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-01,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-01,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-02,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-02,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-03,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-03,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-04,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-04,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-04-1,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-04-1,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-04-2,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-04-2,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-05,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-05,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-06,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-06,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-07,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-07,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-08,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-08,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-09,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-09,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-10,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-10,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-11,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-11,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-12,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-12,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-13,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-13,Padrao,PADRAO,Quadro Principal,1
+RREO,RREO-14,Padrão,PADRAO,Quadro Principal,1
+RREO,RREO-14,Padrao,PADRAO,Quadro Principal,1
+DCA,DCA-I-E,Total Geral da Despesa por Função,TOTAL_GERAL_FUNCAO,Total Geral da Despesa por Função,2
+DCA,DCA-I-G,Total Geral da Despesa por Função,TOTAL_GERAL_FUNCAO,Total Geral de Restos a Pagar por Função,2
+RREO,RREO-02,Total das Despesas Exceto Intra-Orçamentárias,TOTAL_EXCETO_INTRA,Total das Despesas Exceto Intra-Orçamentárias,2
+RREO,RREO-02,Total das Despesas Intra-Orçamentárias,TOTAL_INTRA,Total das Despesas Intra-Orçamentárias,3
+RREO,RREO-02,Total de Despesas,TOTAL_DESPESAS,Total Geral de Despesas,4
+RREO,RREO-13,"Do Ente Federado, exceto estatais não dependentes - Contratadas (I.1)",PPP_ENTE_CONTRATADAS_I1,PPP do Ente Federado - Contratadas (I.1),2
+RREO,RREO-13,RECEITA CORRENTE LÍQUIDA (RCL) (III),PPP_RCL_III,Receita Corrente Líquida (III),3
+RREO,RREO-13,RECEITA CORRENTE LÍQUIDA (RCL) (IV),PPP_RCL_IV,Receita Corrente Líquida (IV),4
+RREO,RREO-13,RECEITA CORRENTE LÍQUIDA (RCL) (V),PPP_RCL_V,Receita Corrente Líquida (V),5
+RREO,RREO-13,TOTAL DAS DESPESAS,PPP_TOTAL_DESPESAS,Total das Despesas de PPP,6
+RREO,RREO-13,TOTAL DAS DESPESAS CONSIDERADAS PARA O LIMITE = (I),PPP_TOTAL_LIMITE_I,Total das Despesas Consideradas para o Limite (I),7
+RREO,RREO-13,TOTAL DAS DESPESAS DE PPP (III) = (I + II),PPP_TOTAL_III,Total das Despesas de PPP (III),8
+RREO,RREO-13,TOTAL DAS DESPESAS DE PPP DAS ESTATAIS NÃO-DEPENDENTES (II) = (II.1 + II.2),PPP_TOTAL_ESTATAIS_II,Total das Despesas de PPP das Estatais Não-Dependentes (II),9
+RREO,RREO-13,TOTAL DAS DESPESAS DE PPP DO ENTE FEDERADO (I) = (I.1 + I.2),PPP_TOTAL_ENTE_I,Total das Despesas de PPP do Ente Federado (I),10

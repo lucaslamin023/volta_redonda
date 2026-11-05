@@ -1,0 +1,33 @@
+table fIPCA
+	lineageTag: ea1804e2-8e34-4276-bd2e-2823d53b8d0e
+
+	column sk_data
+		dataType: int64
+		isHidden
+		lineageTag: af0cc282-18ed-47eb-9da8-78729a278f6e
+		sourceColumn: sk_data
+
+	column indice
+		dataType: decimal
+		lineageTag: 33b767d5-3894-41bc-a3e8-69be934dae1a
+		sourceColumn: indice
+
+	column variacao_mensal_pct
+		dataType: decimal
+		lineageTag: 428c7885-5324-4cff-a299-fa9154ba8eab
+		sourceColumn: variacao_mensal_pct
+
+	column fonte
+		dataType: string
+		lineageTag: 0653eb3c-913d-4e47-9534-817a49a42ede
+		sourceColumn: fonte
+
+	partition fIPCA = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_ipca"]}[Data]
+				in
+				    view_data
+

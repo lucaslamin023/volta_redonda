@@ -1,0 +1,38 @@
+table fPopulacao
+	lineageTag: b1e8c6b1-e5bc-454c-933c-edb748bbe6e8
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 2eb71c84-4e9c-4a01-92bd-2a7604feae4d
+		sourceColumn: sk_ente
+
+	column exercicio
+		dataType: int64
+		lineageTag: 3886c831-826e-4cf7-917a-7ecd46b329bf
+		sourceColumn: exercicio
+
+	column populacao
+		dataType: int64
+		lineageTag: 8d11b69c-805b-4b6b-8976-9286569e762d
+		sourceColumn: populacao
+
+	column fonte
+		dataType: string
+		lineageTag: bdd98bef-a6b1-4793-bcc8-f9917fd12e4a
+		sourceColumn: fonte
+
+	column data_referencia
+		dataType: dateTime
+		lineageTag: 1c53eb75-c99e-4f32-8f96-3f744b36483e
+		sourceColumn: data_referencia
+
+	partition fPopulacao = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_populacao"]}[Data]
+				in
+				    view_data
+

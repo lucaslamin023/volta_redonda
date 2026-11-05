@@ -1,0 +1,47 @@
+table etlControle
+	lineageTag: 547854cd-fd0a-4ff6-89b5-402b1b10b6e7
+
+	column id_execucao
+		dataType: int64
+		lineageTag: 7cbce38e-3ecb-4ca9-8df9-4e1e841787d1
+		sourceColumn: id_execucao
+
+	column inicio
+		dataType: dateTime
+		lineageTag: e0a14ad3-8752-4043-ad13-9c6b42d64c63
+		sourceColumn: inicio
+
+	column fim
+		dataType: dateTime
+		lineageTag: 1a1397f0-ab4f-49e9-82a6-284787c98e9e
+		sourceColumn: fim
+
+	column status
+		dataType: string
+		lineageTag: 611684ef-6994-45f8-8577-c3253dd88c65
+		sourceColumn: status
+
+	column escopo
+		dataType: string
+		lineageTag: d21948ac-8775-4984-bcf4-9d397c6ee131
+		sourceColumn: escopo
+
+	column linhas_gold
+		dataType: int64
+		lineageTag: 92cbad33-2674-4b7c-9ada-c8b5d2718764
+		sourceColumn: linhas_gold
+
+	column observacao
+		dataType: string
+		lineageTag: 6b272148-a99a-42f8-b5a1-1da9b2738411
+		sourceColumn: observacao
+
+	partition etlControle = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="etl_controle"]}[Data]
+				in
+				    view_data
+

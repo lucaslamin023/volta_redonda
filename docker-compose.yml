@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: siconfi_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-siconfi_dw}
+      POSTGRES_USER: ${POSTGRES_USER:-etl_admin}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-siconfi_etl_local_2026}
+      TZ: America/Sao_Paulo
+      PGTZ: America/Sao_Paulo
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - siconfi_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-etl_admin} -d ${POSTGRES_DB:-siconfi_dw}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  siconfi_pgdata:
+    name: siconfi_vr_city_pgdata

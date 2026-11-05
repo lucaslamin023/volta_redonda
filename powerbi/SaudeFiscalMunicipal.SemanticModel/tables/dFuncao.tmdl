@@ -1,0 +1,43 @@
+table dFuncao
+	lineageTag: 79024b3b-803e-44e7-ad86-0d95830005a2
+
+	column sk_funcao
+		dataType: int64
+		isHidden
+		lineageTag: 7c5cd039-1c96-4290-9bd5-1b79ea955ee7
+		sourceColumn: sk_funcao
+
+	column cod_funcao
+		dataType: string
+		lineageTag: 1056223f-74cd-4619-98d1-3202be041fbd
+		sourceColumn: cod_funcao
+
+	column nome_funcao
+		dataType: string
+		lineageTag: 4dd19bcf-e908-404c-badc-ee912525dc48
+		sourceColumn: nome_funcao
+
+	column cod_subfuncao
+		dataType: string
+		lineageTag: 1bb92a1e-6e3d-4524-ab5b-541199de9621
+		sourceColumn: cod_subfuncao
+
+	column nome_subfuncao
+		dataType: string
+		lineageTag: 5c6675eb-e281-4c2c-a55c-86e303e92fc1
+		sourceColumn: nome_subfuncao
+
+	column nivel
+		dataType: string
+		lineageTag: 4856a4d4-9e4c-4fab-898d-38fdd9807304
+		sourceColumn: nivel
+
+	partition dFuncao = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_funcao"]}[Data]
+				in
+				    view_data
+

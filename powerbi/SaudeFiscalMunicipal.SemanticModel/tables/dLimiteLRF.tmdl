@@ -1,0 +1,111 @@
+table dLimiteLRF
+	lineageTag: ed929321-1c03-4abe-9734-359cdef9d0a9
+
+	column sk_limite
+		dataType: int64
+		isHidden
+		lineageTag: 0aba778c-6e44-49b8-a6ec-c4604d012fb2
+		summarizeBy: sum
+		sourceColumn: sk_limite
+
+		annotation SummarizationSetBy = Automatic
+
+	column codigo_limite
+		dataType: string
+		lineageTag: 4bf1aafc-dcd6-47ef-85fb-ff0740692dc8
+		summarizeBy: none
+		sourceColumn: codigo_limite
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao
+		dataType: string
+		lineageTag: c0938930-528d-41fb-8aba-a24e8a5307de
+		summarizeBy: none
+		sourceColumn: descricao
+
+		annotation SummarizationSetBy = Automatic
+
+	column percentual_limite
+		dataType: decimal
+		lineageTag: 4444f0b4-226e-4a9a-a538-d241febf033f
+		summarizeBy: sum
+		sourceColumn: percentual_limite
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_alerta
+		dataType: decimal
+		lineageTag: e4370dda-0dd5-4d96-925f-cbff68cc7456
+		summarizeBy: sum
+		sourceColumn: pct_alerta
+
+		annotation SummarizationSetBy = Automatic
+
+	column pct_prudencial
+		dataType: decimal
+		lineageTag: 1da93eee-f50c-41bd-8162-fa2155de7465
+		summarizeBy: sum
+		sourceColumn: pct_prudencial
+
+		annotation SummarizationSetBy = Automatic
+
+	column tipo_limite
+		dataType: string
+		lineageTag: e53dc06e-7c46-4684-b57c-3bb92ea5d757
+		summarizeBy: none
+		sourceColumn: tipo_limite
+
+		annotation SummarizationSetBy = Automatic
+
+	column base_calculo
+		dataType: string
+		lineageTag: b4d4edc6-9d31-43b3-8c81-4c0b019546d9
+		summarizeBy: none
+		sourceColumn: base_calculo
+
+		annotation SummarizationSetBy = Automatic
+
+	column vigencia_ini
+		dataType: dateTime
+		lineageTag: c481ef7c-bdcd-4fb5-bdc3-fe7cb401611b
+		summarizeBy: none
+		sourceColumn: vigencia_ini
+
+		variation Variação
+			isDefault
+			relationship: e15a5f28-8219-488d-8464-4561c39e379f
+			defaultHierarchy: LocalDateTable_390397a1-cb62-4c8a-9092-92d2476c04c2.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column vigencia_fim
+		dataType: dateTime
+		lineageTag: a2f90515-b9de-436c-9e5e-00bbb64bfff0
+		summarizeBy: none
+		sourceColumn: vigencia_fim
+
+		variation Variação
+			isDefault
+			relationship: 9755fd1b-8b4f-413d-afd4-f629a6739d29
+			defaultHierarchy: LocalDateTable_a04da6cd-9b81-4ba8-a81e-2b926c118aa3.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column base_legal
+		dataType: string
+		lineageTag: 4416785c-8b6d-465f-8b5f-b6a1e52e85d1
+		summarizeBy: none
+		sourceColumn: base_legal
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dLimiteLRF = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_limite_lrf"]}[Data]
+				in
+				    view_data
+

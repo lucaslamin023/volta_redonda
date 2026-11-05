@@ -1,0 +1,38 @@
+table dNaturezaDespesa
+	lineageTag: 50214c6a-71d9-40db-a5f4-95e84a70fd91
+
+	column sk_natureza
+		dataType: int64
+		isHidden
+		lineageTag: 122aef45-6f14-4caf-a0cd-9c31be2cd524
+		sourceColumn: sk_natureza
+
+	column cod_natureza
+		dataType: string
+		lineageTag: b9487047-f54d-4dfb-aa96-1fb62d6fb3e8
+		sourceColumn: cod_natureza
+
+	column nome_natureza
+		dataType: string
+		lineageTag: fabcf272-7a5f-44d1-88c5-e459b3930dde
+		sourceColumn: nome_natureza
+
+	column categoria_economica
+		dataType: string
+		lineageTag: 83a86e0b-9df7-455e-a3d1-f0135a3e9a91
+		sourceColumn: categoria_economica
+
+	column grupo_despesa
+		dataType: string
+		lineageTag: 2ea3a77c-c21e-47c1-93ef-7d699b5675e5
+		sourceColumn: grupo_despesa
+
+	partition dNaturezaDespesa = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_natureza_despesa"]}[Data]
+				in
+				    view_data
+

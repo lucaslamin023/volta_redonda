@@ -1,0 +1,153 @@
+relationship d40e5dcb-4ca2-46c5-b6fe-592c0fe13bda
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dCalendario.data
+	toColumn: LocalDateTable_1386b3df-eb05-4d10-8305-f896b61d8e1d.Date
+
+relationship 77862096-0186-49f0-b7c4-9637a876ef40
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dConta.vigencia_ini
+	toColumn: LocalDateTable_03c811e5-5244-4425-8952-147724c995e3.Date
+
+relationship 9a3825cc-a000-4b68-b39b-a83307f3f196
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dConta.vigencia_fim
+	toColumn: LocalDateTable_89fee072-0d46-4d16-a414-74fe837b8a29.Date
+
+relationship e15a5f28-8219-488d-8464-4561c39e379f
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dLimiteLRF.vigencia_ini
+	toColumn: LocalDateTable_390397a1-cb62-4c8a-9092-92d2476c04c2.Date
+
+relationship 9755fd1b-8b4f-413d-afd4-f629a6739d29
+	joinOnDateBehavior: datePartOnly
+	fromColumn: dLimiteLRF.vigencia_fim
+	toColumn: LocalDateTable_a04da6cd-9b81-4ba8-a81e-2b926c118aa3.Date
+
+relationship fRREO_sk_ente_dEnte_sk_ente
+	fromColumn: fRREO.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fRREO_sk_data_fim_periodo_dCalendario_sk_data
+	fromColumn: fRREO.sk_data_fim_periodo
+	toColumn: dCalendario.sk_data
+
+relationship fRREO_sk_poder_dPoder_sk_poder
+	fromColumn: fRREO.sk_poder
+	toColumn: dPoder.sk_poder
+
+relationship fRREO_sk_secao_dSecao_sk_secao
+	fromColumn: fRREO.sk_secao
+	toColumn: dSecao.sk_secao
+
+relationship fRREO_sk_conta_dConta_sk_conta
+	fromColumn: fRREO.sk_conta
+	toColumn: dConta.sk_conta
+
+relationship fRREO_sk_coluna_dColuna_sk_coluna
+	fromColumn: fRREO.sk_coluna
+	toColumn: dColuna.sk_coluna
+
+relationship fRREO_sk_funcao_dFuncao_sk_funcao
+	fromColumn: fRREO.sk_funcao
+	toColumn: dFuncao.sk_funcao
+
+relationship fRGF_sk_ente_dEnte_sk_ente
+	fromColumn: fRGF.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fRGF_sk_data_fim_periodo_dCalendario_sk_data
+	fromColumn: fRGF.sk_data_fim_periodo
+	toColumn: dCalendario.sk_data
+
+relationship fRGF_sk_poder_dPoder_sk_poder
+	fromColumn: fRGF.sk_poder
+	toColumn: dPoder.sk_poder
+
+relationship fRGF_sk_secao_dSecao_sk_secao
+	fromColumn: fRGF.sk_secao
+	toColumn: dSecao.sk_secao
+
+relationship fRGF_sk_conta_dConta_sk_conta
+	fromColumn: fRGF.sk_conta
+	toColumn: dConta.sk_conta
+
+relationship fRGF_sk_coluna_dColuna_sk_coluna
+	fromColumn: fRGF.sk_coluna
+	toColumn: dColuna.sk_coluna
+
+relationship fRGF_sk_fonte_recurso_dFonteRecurso_sk_fonte_recurso
+	fromColumn: fRGF.sk_fonte_recurso
+	toColumn: dFonteRecurso.sk_fonte_recurso
+
+relationship fDCA_sk_ente_dEnte_sk_ente
+	fromColumn: fDCA.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fDCA_sk_data_fim_periodo_dCalendario_sk_data
+	fromColumn: fDCA.sk_data_fim_periodo
+	toColumn: dCalendario.sk_data
+
+relationship fDCA_sk_poder_dPoder_sk_poder
+	fromColumn: fDCA.sk_poder
+	toColumn: dPoder.sk_poder
+
+relationship fDCA_sk_secao_dSecao_sk_secao
+	fromColumn: fDCA.sk_secao
+	toColumn: dSecao.sk_secao
+
+relationship fDCA_sk_conta_dConta_sk_conta
+	fromColumn: fDCA.sk_conta
+	toColumn: dConta.sk_conta
+
+relationship fDCA_sk_coluna_dColuna_sk_coluna
+	fromColumn: fDCA.sk_coluna
+	toColumn: dColuna.sk_coluna
+
+relationship fDCA_sk_funcao_dFuncao_sk_funcao
+	fromColumn: fDCA.sk_funcao
+	toColumn: dFuncao.sk_funcao
+
+relationship fDCA_sk_natureza_dNaturezaDespesa_sk_natureza
+	fromColumn: fDCA.sk_natureza
+	toColumn: dNaturezaDespesa.sk_natureza
+
+relationship fDCA_sk_fonte_recurso_dFonteRecurso_sk_fonte_recurso
+	fromColumn: fDCA.sk_fonte_recurso
+	toColumn: dFonteRecurso.sk_fonte_recurso
+
+relationship fIPCA_sk_data_dCalendario_sk_data
+	fromColumn: fIPCA.sk_data
+	toColumn: dCalendario.sk_data
+
+relationship fPopulacao_sk_ente_dEnte_sk_ente
+	fromColumn: fPopulacao.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fIndicador_sk_ente_dEnte_sk_ente
+	fromColumn: fIndicador.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fIndicador_sk_data_fim_periodo_dCalendario_sk_data
+	fromColumn: fIndicador.sk_data_fim_periodo
+	toColumn: dCalendario.sk_data
+
+relationship fIndicador_sk_poder_dPoder_sk_poder
+	fromColumn: fIndicador.sk_poder
+	toColumn: dPoder.sk_poder
+
+relationship fIndicador_sk_indicador_dIndicador_sk_indicador
+	fromColumn: fIndicador.sk_indicador
+	toColumn: dIndicador.sk_indicador
+
+relationship fIndicador_sk_limite_dLimiteLRF_sk_limite
+	fromColumn: fIndicador.sk_limite
+	toColumn: dLimiteLRF.sk_limite
+
+relationship fQualidade_sk_ente_dEnte_sk_ente
+	fromColumn: fQualidade.sk_ente
+	toColumn: dEnte.sk_ente
+
+relationship fQualidade_id_execucao_etlControle_id_execucao
+	fromColumn: fQualidade.id_execucao
+	toColumn: etlControle.id_execucao
+

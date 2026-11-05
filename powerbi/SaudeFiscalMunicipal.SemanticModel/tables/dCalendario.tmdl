@@ -1,0 +1,150 @@
+table dCalendario
+	lineageTag: d5816ee1-3d60-4721-a2e3-ff94cc7702a6
+	dataCategory: Time
+
+	column sk_data
+		dataType: int64
+		isHidden
+		lineageTag: 4d64d701-450a-4371-b59c-13343bea0c5f
+		summarizeBy: sum
+		sourceColumn: sk_data
+
+		annotation SummarizationSetBy = Automatic
+
+	column data
+		dataType: dateTime
+		lineageTag: b72b3022-aac1-4a27-8a04-839606ed6558
+		summarizeBy: none
+		sourceColumn: data
+
+		variation Variação
+			isDefault
+			relationship: d40e5dcb-4ca2-46c5-b6fe-592c0fe13bda
+			defaultHierarchy: LocalDateTable_1386b3df-eb05-4d10-8305-f896b61d8e1d.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column ano
+		dataType: int64
+		lineageTag: 325daf9a-5665-47f1-866f-9966d272fb38
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column semestre
+		dataType: int64
+		lineageTag: 18c8347e-f71e-4133-8476-f4e7df9045ef
+		summarizeBy: none
+		sourceColumn: semestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column trimestre
+		dataType: int64
+		lineageTag: 766fc6bb-f849-49f3-a96a-1da0adb3ec56
+		summarizeBy: none
+		sourceColumn: trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column quadrimestre
+		dataType: int64
+		lineageTag: 0cee6e21-f78a-48ee-8bdc-9f51db61969c
+		summarizeBy: none
+		sourceColumn: quadrimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column bimestre
+		dataType: int64
+		lineageTag: 797dbf84-36d4-4455-8fe8-b4776969c4d4
+		summarizeBy: none
+		sourceColumn: bimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes
+		dataType: int64
+		lineageTag: ad4f09f5-e4fc-4247-a917-1a0c57c186f9
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column nome_mes
+		dataType: string
+		lineageTag: ca10172a-c82e-45cb-8791-2dbbe4bef523
+		summarizeBy: none
+		sourceColumn: nome_mes
+		sortByColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column mes_ano
+		dataType: string
+		lineageTag: 1843cc86-212b-411b-b72c-d21fce309a34
+		summarizeBy: none
+		sourceColumn: mes_ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_fim_bimestre
+		dataType: int64
+		lineageTag: d1245cd9-49cf-44c8-9291-e295964d40a4
+		summarizeBy: none
+		sourceColumn: eh_fim_bimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_fim_quadrimestre
+		dataType: int64
+		lineageTag: 5a40484a-c252-4438-b1b8-2db650c130de
+		summarizeBy: none
+		sourceColumn: eh_fim_quadrimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_fim_semestre
+		dataType: int64
+		lineageTag: 24cbf98f-f42c-4fce-8e08-8f701982d80f
+		summarizeBy: none
+		sourceColumn: eh_fim_semestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_fim_exercicio
+		dataType: int64
+		lineageTag: 484dfbe2-8c27-43ce-b04a-fda0408a5ddd
+		summarizeBy: none
+		sourceColumn: eh_fim_exercicio
+
+		annotation SummarizationSetBy = Automatic
+
+	column label_periodo_rreo
+		dataType: string
+		lineageTag: e1eb444f-b849-4c26-916e-5ee6e719be22
+		summarizeBy: none
+		sourceColumn: label_periodo_rreo
+		sortByColumn: sk_data
+
+		annotation SummarizationSetBy = Automatic
+
+	column label_periodo_rgf
+		dataType: string
+		lineageTag: ed1e6e07-a40a-4557-a7b8-1c16029d55b4
+		summarizeBy: none
+		sourceColumn: label_periodo_rgf
+		sortByColumn: sk_data
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dCalendario = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_calendario"]}[Data]
+				in
+				    view_data
+

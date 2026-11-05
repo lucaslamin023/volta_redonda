@@ -1,0 +1,45 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	discourageImplicitMeasures
+	sourceQueryCulture: pt-BR
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["MCP-PBIModeling"]
+
+ref table _Medidas
+ref table dEnte
+ref table dCalendario
+ref table dPoder
+ref table dColuna
+ref table dSecao
+ref table dConta
+ref table dFuncao
+ref table dNaturezaDespesa
+ref table dFonteRecurso
+ref table dLimiteLRF
+ref table dIndicador
+ref table DateTableTemplate_5d11feea-2433-46b0-b2fd-2837514872b1
+ref table LocalDateTable_1386b3df-eb05-4d10-8305-f896b61d8e1d
+ref table LocalDateTable_03c811e5-5244-4425-8952-147724c995e3
+ref table LocalDateTable_89fee072-0d46-4d16-a414-74fe837b8a29
+ref table LocalDateTable_390397a1-cb62-4c8a-9092-92d2476c04c2
+ref table LocalDateTable_a04da6cd-9b81-4ba8-a81e-2b926c118aa3
+ref table fRREO
+ref table fRGF
+ref table fDCA
+ref table fIPCA
+ref table fPopulacao
+ref table fIndicador
+ref table fQualidade
+ref table etlControle
+ref table pDataBaseIPCA
+ref table cgEscalaValor
+
+ref cultureInfo pt-BR
+

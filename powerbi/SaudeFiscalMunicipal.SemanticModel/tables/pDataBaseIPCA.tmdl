@@ -1,0 +1,13 @@
+table pDataBaseIPCA
+	lineageTag: ffa71d4c-5d03-469a-9ccf-c4e32f7cbf29
+
+	column data
+		lineageTag: bac2ba0e-aab1-4724-b44c-659981841ebb
+		isNameInferred
+		sourceColumn: dCalendario[data]
+		columnOrigin: dCalendario.data
+
+	partition pDataBaseIPCA = calculated
+		mode: import
+		source = CALCULATETABLE(DISTINCT(dCalendario[data]), fIPCA)
+

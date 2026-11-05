@@ -1,0 +1,75 @@
+table fRREO
+	lineageTag: 63d933e2-7fc1-4a3b-9463-7e1b5e111697
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 1ff4026c-ef2e-413b-bd2c-7b0665b6a6eb
+		sourceColumn: sk_ente
+
+	column sk_data_fim_periodo
+		dataType: int64
+		isHidden
+		lineageTag: 66b99ba1-1e99-4c43-ac66-c9d0e4bf96aa
+		sourceColumn: sk_data_fim_periodo
+
+	column sk_poder
+		dataType: int64
+		isHidden
+		lineageTag: 1a12ed85-5642-4b99-853d-6504502db448
+		sourceColumn: sk_poder
+
+	column sk_secao
+		dataType: int64
+		isHidden
+		lineageTag: bae0d9e2-9524-4048-b534-5b5cdaf99a3a
+		sourceColumn: sk_secao
+
+	column sk_conta
+		dataType: int64
+		isHidden
+		lineageTag: d832b77d-d881-4c8e-8b9b-2f7fb6f459f9
+		sourceColumn: sk_conta
+
+	column sk_coluna
+		dataType: int64
+		isHidden
+		lineageTag: a60913e2-7a30-4097-b589-006b0f5f0f9c
+		sourceColumn: sk_coluna
+
+	column sk_funcao
+		dataType: int64
+		isHidden
+		lineageTag: 2eb35d65-3014-4b4f-b38d-5372cf25687d
+		sourceColumn: sk_funcao
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: f2b37f8d-881f-4511-ad48-1eaa65593599
+		sourceColumn: anexo_codigo
+
+	column valor
+		dataType: decimal
+		isHidden
+		lineageTag: 9265dbb3-2297-4a6b-bdb4-9ece90062d22
+		sourceColumn: valor
+
+	column eh_vigente
+		dataType: int64
+		lineageTag: 28ad5d6b-1a54-4e34-95ed-3cde5f5bc435
+		sourceColumn: eh_vigente
+
+	column data_homologacao
+		dataType: dateTime
+		lineageTag: d7583861-853f-49a6-85f4-ea554010f037
+		sourceColumn: data_homologacao
+
+	partition fRREO = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_rreo"]}[Data]
+				in
+				    view_data
+

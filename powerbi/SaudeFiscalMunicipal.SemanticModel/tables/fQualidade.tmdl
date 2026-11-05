@@ -1,0 +1,77 @@
+table fQualidade
+	lineageTag: 34bfe84e-d766-4d71-8af2-6de1cd4a9c4a
+
+	column id_ocorrencia
+		dataType: int64
+		lineageTag: 6df6ab9d-9695-4f9e-98b3-4d10baae28dd
+		summarizeBy: none
+		sourceColumn: id_ocorrencia
+
+	column id_execucao
+		dataType: int64
+		isHidden
+		lineageTag: b4fe3c26-849b-4297-a83c-56a7895fee4c
+		sourceColumn: id_execucao
+
+	column dt_execucao
+		dataType: dateTime
+		lineageTag: 2e709686-780d-4faa-957a-6db06f11ac30
+		sourceColumn: dt_execucao
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: f9870764-dbd3-407c-9d45-9a1665c7437c
+		sourceColumn: sk_ente
+
+	column exercicio
+		dataType: int64
+		lineageTag: 7622731d-5f94-4ff7-a14f-ebb419a71b60
+		summarizeBy: none
+		sourceColumn: exercicio
+
+	column periodo_codigo
+		dataType: int64
+		lineageTag: da404722-db1e-403b-a4bb-d31ba217c26d
+		summarizeBy: none
+		sourceColumn: periodo_codigo
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: 00e2ec01-683c-499b-9a3c-deb63b9b21e0
+		sourceColumn: anexo_codigo
+
+	column codigo_teste
+		dataType: string
+		lineageTag: 2982dd08-1f1d-43f1-ad57-13f0be83c148
+		sourceColumn: codigo_teste
+
+	column severidade
+		dataType: string
+		lineageTag: 680ddab8-dee7-4eb1-9688-0d1d84a274a3
+		sourceColumn: severidade
+
+	column valor_esperado
+		dataType: string
+		lineageTag: 6cbf403c-8f06-4289-bf3c-01a9ec470a9b
+		sourceColumn: valor_esperado
+
+	column valor_obtido
+		dataType: string
+		lineageTag: 1554ce05-97f4-492f-ab0f-1012d1a4d24d
+		sourceColumn: valor_obtido
+
+	column mensagem
+		dataType: string
+		lineageTag: 047c35e5-d390-4935-8853-c9b9eb5d70f6
+		sourceColumn: mensagem
+
+	partition fQualidade = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_qualidade"]}[Data]
+				in
+				    view_data
+

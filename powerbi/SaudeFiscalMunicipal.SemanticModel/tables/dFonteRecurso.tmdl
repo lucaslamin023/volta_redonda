@@ -1,0 +1,44 @@
+table dFonteRecurso
+	lineageTag: 51f58794-7b08-4037-9625-846fc55ebd28
+
+	column sk_fonte_recurso
+		dataType: int64
+		isHidden
+		lineageTag: 8a4322ca-776d-44bc-b073-c6410c564130
+		sourceColumn: sk_fonte_recurso
+
+	column cod_fonte
+		dataType: string
+		lineageTag: 6e99788d-afff-496c-8aae-22a814f5f895
+		sourceColumn: cod_fonte
+
+	column cod_fonte_padrao
+		dataType: string
+		lineageTag: 4de1ca35-a6b1-4b20-9033-e6e2618cae4d
+		sourceColumn: cod_fonte_padrao
+
+	column nome_fonte
+		dataType: string
+		lineageTag: 94e0d099-0165-4c3e-b27c-4036143f81c0
+		sourceColumn: nome_fonte
+
+	column grupo
+		dataType: string
+		lineageTag: 4d95b10e-28fd-4ffc-a262-bb239ca6c70a
+		sourceColumn: grupo
+
+	column vinculada
+		dataType: int64
+		lineageTag: eb960f0c-c405-475d-a91d-e7f9bd9b3df8
+		summarizeBy: none
+		sourceColumn: vinculada
+
+	partition dFonteRecurso = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_fonte_recurso"]}[Data]
+				in
+				    view_data
+

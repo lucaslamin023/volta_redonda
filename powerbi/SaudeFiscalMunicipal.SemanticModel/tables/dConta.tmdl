@@ -1,0 +1,143 @@
+table dConta
+	lineageTag: 650e661c-f25d-4076-9d32-d8e4e914d00e
+
+	column sk_conta
+		dataType: int64
+		isHidden
+		lineageTag: f8f29874-0b6f-4be2-b69b-9a2af65224f3
+		summarizeBy: sum
+		sourceColumn: sk_conta
+
+		annotation SummarizationSetBy = Automatic
+
+	column fonte
+		dataType: string
+		lineageTag: 653c41f6-b7ed-4e31-958d-1421275fc63b
+		summarizeBy: none
+		sourceColumn: fonte
+
+		annotation SummarizationSetBy = Automatic
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: daab3b32-cbd2-4ebc-b07f-94d106583ad0
+		summarizeBy: none
+		sourceColumn: anexo_codigo
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_conta
+		dataType: string
+		lineageTag: 30a899db-5457-4b19-abfb-6d4b703413ea
+		summarizeBy: none
+		sourceColumn: cod_conta
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_conta_padrao
+		dataType: string
+		lineageTag: 7bd74d8d-7449-47f6-bf0c-43eb41801e01
+		summarizeBy: none
+		sourceColumn: cod_conta_padrao
+
+		annotation SummarizationSetBy = Automatic
+
+	column descricao
+		dataType: string
+		lineageTag: b266c72e-2881-45dc-9a7d-d525221636fa
+		summarizeBy: none
+		sourceColumn: descricao
+
+		annotation SummarizationSetBy = Automatic
+
+	column cod_conta_pai
+		dataType: string
+		lineageTag: 7d496163-69a9-4d67-88b9-5d07669fe6f0
+		summarizeBy: none
+		sourceColumn: cod_conta_pai
+
+		annotation SummarizationSetBy = Automatic
+
+	column nivel
+		dataType: int64
+		lineageTag: 1a8bcf36-4b10-4a4a-9cb6-61f159e67b54
+		summarizeBy: none
+		sourceColumn: nivel
+
+		annotation SummarizationSetBy = Automatic
+
+	column caminho
+		dataType: string
+		lineageTag: bfd73eab-5041-4176-9491-2a0619c833ad
+		summarizeBy: none
+		sourceColumn: caminho
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_folha
+		dataType: int64
+		lineageTag: ff16706b-b151-402f-a1e6-0c86a0ecc713
+		summarizeBy: none
+		sourceColumn: eh_folha
+
+		annotation SummarizationSetBy = Automatic
+
+	column eh_total
+		dataType: int64
+		lineageTag: 3d15e489-0315-4456-b8d6-bd3e2cfa736e
+		summarizeBy: none
+		sourceColumn: eh_total
+
+		annotation SummarizationSetBy = Automatic
+
+	column grupo_analitico
+		dataType: string
+		lineageTag: c302e70c-8914-432e-9bb3-9a4c251659a7
+		summarizeBy: none
+		sourceColumn: grupo_analitico
+
+		annotation SummarizationSetBy = Automatic
+
+	column sinal_semantico
+		dataType: int64
+		lineageTag: eb79fca5-26ab-4dee-b70c-267c764287e3
+		summarizeBy: none
+		sourceColumn: sinal_semantico
+
+		annotation SummarizationSetBy = Automatic
+
+	column vigencia_ini
+		dataType: dateTime
+		lineageTag: 24c6f0bc-bd5e-45ba-81d2-70b3fa28dae0
+		summarizeBy: none
+		sourceColumn: vigencia_ini
+
+		variation Variação
+			isDefault
+			relationship: 77862096-0186-49f0-b7c4-9637a876ef40
+			defaultHierarchy: LocalDateTable_03c811e5-5244-4425-8952-147724c995e3.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	column vigencia_fim
+		dataType: dateTime
+		lineageTag: 94c2f887-d8e7-4916-8dc6-cd60ddb5b897
+		summarizeBy: none
+		sourceColumn: vigencia_fim
+
+		variation Variação
+			isDefault
+			relationship: 9a3825cc-a000-4b68-b39b-a83307f3f196
+			defaultHierarchy: LocalDateTable_89fee072-0d46-4d16-a414-74fe837b8a29.'Hierarquia de datas'
+
+		annotation SummarizationSetBy = Automatic
+
+	partition dConta = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_conta"]}[Data]
+				in
+				    view_data
+

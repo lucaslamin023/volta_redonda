@@ -1,0 +1,82 @@
+table fIndicador
+	lineageTag: 65e4d5f6-912a-4547-aa6a-c7a7298620b3
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 2bdd5753-b110-4510-9483-1a92408b2924
+		sourceColumn: sk_ente
+
+	column sk_data_fim_periodo
+		dataType: int64
+		isHidden
+		lineageTag: 9c1c3884-07a7-41d0-8b51-8298222086a6
+		sourceColumn: sk_data_fim_periodo
+
+	column sk_poder
+		dataType: int64
+		isHidden
+		lineageTag: cc870e7d-c324-4159-be99-7f1aa37ac6fd
+		sourceColumn: sk_poder
+
+	column sk_indicador
+		dataType: int64
+		isHidden
+		lineageTag: 9f1078fd-56e5-4235-9c51-b84773943a9e
+		sourceColumn: sk_indicador
+
+	column sk_limite
+		dataType: int64
+		isHidden
+		lineageTag: 9f9ceb1d-e40b-42e1-8f7b-a06b7765e405
+		sourceColumn: sk_limite
+
+	column numerador
+		dataType: decimal
+		lineageTag: 22891042-a018-4d4a-9237-8d3107be6027
+		sourceColumn: numerador
+
+	column denominador
+		dataType: decimal
+		lineageTag: 5fce4056-d804-4d73-adb0-532774467472
+		sourceColumn: denominador
+
+	column valor_indicador
+		dataType: decimal
+		lineageTag: fba59604-83da-4b0d-a5f1-98457c06bef5
+		sourceColumn: valor_indicador
+
+	column valor_declarado
+		dataType: decimal
+		lineageTag: 613b08a5-2627-4462-8bd9-91f03047f791
+		sourceColumn: valor_declarado
+
+	column diferenca_declarado
+		dataType: decimal
+		lineageTag: cffb9510-7809-451d-8dcd-5b21937bb345
+		sourceColumn: diferenca_declarado
+
+	column margem_ao_limite
+		dataType: decimal
+		lineageTag: a5f008b8-d127-4bf3-b156-ff43acd801cd
+		sourceColumn: margem_ao_limite
+
+	column status_limite
+		dataType: string
+		lineageTag: de7f60b6-7868-469c-9d82-7e0d653b53f2
+		sourceColumn: status_limite
+
+	column metodo
+		dataType: string
+		lineageTag: 6de5b548-2233-45bf-9f2c-c160df0a9160
+		sourceColumn: metodo
+
+	partition fIndicador = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_indicador"]}[Data]
+				in
+				    view_data
+

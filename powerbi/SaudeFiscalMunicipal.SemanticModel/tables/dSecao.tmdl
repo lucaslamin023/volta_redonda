@@ -1,0 +1,44 @@
+table dSecao
+	lineageTag: 2dfa33b2-13c2-48a2-8763-61e57f3fcf98
+
+	column sk_secao
+		dataType: int64
+		isHidden
+		lineageTag: 67a1eaab-494e-4023-bb2a-a4dc4f92c741
+		sourceColumn: sk_secao
+
+	column fonte
+		dataType: string
+		lineageTag: 2e1530ae-25af-44c9-b572-1f159620b5b0
+		sourceColumn: fonte
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: 3dbcdafe-fa39-43d3-b377-95c3db17a0e2
+		sourceColumn: anexo_codigo
+
+	column secao_codigo
+		dataType: string
+		lineageTag: 5894e224-fce8-4a7e-b026-27ca3ef3b256
+		sourceColumn: secao_codigo
+
+	column secao_nome
+		dataType: string
+		lineageTag: a5df6098-a851-4cc8-b07d-c7a65e9989ed
+		sourceColumn: secao_nome
+
+	column ordem_exibicao
+		dataType: int64
+		lineageTag: e8d9cce4-da13-4deb-8f07-9a2473a6d7a9
+		summarizeBy: none
+		sourceColumn: ordem_exibicao
+
+	partition dSecao = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="d_secao"]}[Data]
+				in
+				    view_data
+

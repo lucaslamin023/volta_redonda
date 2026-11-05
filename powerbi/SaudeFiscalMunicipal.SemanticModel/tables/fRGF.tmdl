@@ -1,0 +1,75 @@
+table fRGF
+	lineageTag: 1756fe5b-40f8-40b8-95b6-35b80cfd95eb
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 67e8bdba-9caf-4211-bf30-20ceacded314
+		sourceColumn: sk_ente
+
+	column sk_data_fim_periodo
+		dataType: int64
+		isHidden
+		lineageTag: 2f062e19-ad2c-4028-947d-71c78e400bd9
+		sourceColumn: sk_data_fim_periodo
+
+	column sk_poder
+		dataType: int64
+		isHidden
+		lineageTag: 3c2b7ea7-32ae-4247-86e5-f6971d2ac0f1
+		sourceColumn: sk_poder
+
+	column sk_secao
+		dataType: int64
+		isHidden
+		lineageTag: eeefa0db-376c-4c84-aba2-b4c5b089e966
+		sourceColumn: sk_secao
+
+	column sk_conta
+		dataType: int64
+		isHidden
+		lineageTag: cc791c92-8a5e-4fa6-850b-d67aeff998ca
+		sourceColumn: sk_conta
+
+	column sk_coluna
+		dataType: int64
+		isHidden
+		lineageTag: 7445ce3e-fdcd-4eda-a3d0-5b5985408e64
+		sourceColumn: sk_coluna
+
+	column sk_fonte_recurso
+		dataType: int64
+		isHidden
+		lineageTag: 11376252-da37-4dfa-81d1-bcdda8c0c80b
+		sourceColumn: sk_fonte_recurso
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: bd4da4f1-ebc4-4c69-aaaa-eba5337a8bfe
+		sourceColumn: anexo_codigo
+
+	column valor
+		dataType: decimal
+		isHidden
+		lineageTag: 77a697a8-94d2-45e7-8627-a14af519e127
+		sourceColumn: valor
+
+	column eh_vigente
+		dataType: int64
+		lineageTag: 27340eb3-05c6-4f6c-8ddb-a981f066d664
+		sourceColumn: eh_vigente
+
+	column data_homologacao
+		dataType: dateTime
+		lineageTag: 6c01f517-c7a1-4c4e-8191-b85e2fe2026e
+		sourceColumn: data_homologacao
+
+	partition fRGF = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_rgf"]}[Data]
+				in
+				    view_data
+

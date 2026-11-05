@@ -1,0 +1,93 @@
+table cgEscalaValor
+	lineageTag: 47247813-c639-4995-b24f-8555905bf7c9
+
+	/// Calculation Group para conversão dinâmica entre valores Nominais, Reais (IPCA) e Per Capita.
+	calculationGroup
+		precedence: 10
+
+		/// Valores nominais históricos em reais correntes da época.
+		calculationItem 'Nominal (R$)' = SELECTEDMEASURE()
+
+		/// Valores monetários deflacionados pelo IPCA para o poder de compra da data-base selecionada (preserva quocientes, percentuais e textos).
+		calculationItem 'Real - IPCA (R$ Constantes)' =
+				VAR vEhMonetaria =
+				    ISSELECTEDMEASURE(
+				        [Valor Folha RREO],
+				        [Valor Total RREO],
+				        [Valor Fluxo RREO],
+				        [Valor Acumulado RREO],
+				        [Valor Total Acumulado RREO],
+				        [Saldo RGF],
+				        [Saldo Folha RGF],
+				        [Valor DCA],
+				        [RCL Vigente],
+				        [Receita Orcamentaria Realizada],
+				        [Receita Prevista Inicial],
+				        [Receita Prevista Atualizada],
+				        [Despesa Orcamentaria Empenhada],
+				        [Despesa Orcamentaria Liquidada],
+				        [Despesa Orcamentaria Paga],
+				        [Dotacao Inicial],
+				        [Dotacao Atualizada],
+				        [Disponibilidade de Caixa Bruta],
+				        [Obrigacoes Financeiras RGF],
+				        [Disponibilidade de Caixa Liquida Apos RP],
+				        [Suficiencia de Caixa Livre],
+				        [Suficiencia de Caixa Vinculada]
+				    )
+				VAR vDataBase = [Data Base IPCA Selecionada]
+				VAR vIndiceBase = CALCULATE(MAX(fIPCA[indice]), ALL(dCalendario), dCalendario[data] = vDataBase)
+				VAR vIndiceAtual = [IPCA Indice Vigente]
+				RETURN
+				IF(
+				    NOT vEhMonetaria || ISBLANK(vIndiceAtual) || vIndiceAtual <= 0,
+				    SELECTEDMEASURE(),
+				    SELECTEDMEASURE() * DIVIDE(vIndiceBase, vIndiceAtual)
+				)
+
+			formatStringDefinition = SELECTEDMEASUREFORMATSTRING()
+
+		/// Valores monetários divididos pela população residente do município no exercício (preserva quocientes, percentuais e textos).
+		calculationItem 'Per Capita (R$ / hab.)' =
+				VAR vEhMonetaria =
+				    ISSELECTEDMEASURE(
+				        [Valor Folha RREO],
+				        [Valor Total RREO],
+				        [Valor Fluxo RREO],
+				        [Valor Acumulado RREO],
+				        [Valor Total Acumulado RREO],
+				        [Saldo RGF],
+				        [Saldo Folha RGF],
+				        [Valor DCA],
+				        [RCL Vigente],
+				        [Receita Orcamentaria Realizada],
+				        [Receita Prevista Inicial],
+				        [Receita Prevista Atualizada],
+				        [Despesa Orcamentaria Empenhada],
+				        [Despesa Orcamentaria Liquidada],
+				        [Despesa Orcamentaria Paga],
+				        [Dotacao Inicial],
+				        [Dotacao Atualizada],
+				        [Disponibilidade de Caixa Bruta],
+				        [Obrigacoes Financeiras RGF],
+				        [Disponibilidade de Caixa Liquida Apos RP],
+				        [Suficiencia de Caixa Livre],
+				        [Suficiencia de Caixa Vinculada]
+				    )
+				RETURN
+				IF(
+				    NOT vEhMonetaria,
+				    SELECTEDMEASURE(),
+				    VAR vPop = [Populacao do Exercicio]
+				    RETURN
+				    IF(ISBLANK(vPop) || vPop <= 0, BLANK(), DIVIDE(SELECTEDMEASURE(), vPop))
+				)
+
+			formatStringDefinition = SELECTEDMEASUREFORMATSTRING()
+
+	column cgEscalaValor
+		dataType: string
+		lineageTag: 7a3ae546-7991-464e-838a-19c99da3c566
+
+	partition Partition_cgEscalaValor = calculationGroup
+

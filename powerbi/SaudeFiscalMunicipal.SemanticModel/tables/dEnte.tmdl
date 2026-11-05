@@ -1,0 +1,71 @@
+table dEnte
+	lineageTag: 048fd461-1fe3-4933-93e4-222393b99a54
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 965e15c9-100b-4cef-94b5-35b451ba5f87
+		sourceColumn: sk_ente
+
+	column id_ente
+		dataType: int64
+		lineageTag: dd77fe3d-1b5e-4643-8656-a5965d4c8316
+		summarizeBy: none
+		sourceColumn: id_ente
+
+	column nome_ente
+		dataType: string
+		lineageTag: 9419b443-bf0b-4352-ac35-0fd98f717d08
+		sourceColumn: nome_ente
+
+	column uf
+		dataType: string
+		lineageTag: e51b210c-f99f-4a86-b0f3-3fa451ae2e98
+		sourceColumn: uf
+
+	column regiao
+		dataType: string
+		lineageTag: 27cd9e08-f882-452d-a0cf-a15c3e80cba1
+		sourceColumn: regiao
+
+	column esfera
+		dataType: string
+		lineageTag: baf06b1f-3279-4d6b-bd56-e32c167d72d4
+		sourceColumn: esfera
+
+	column capital
+		dataType: int64
+		lineageTag: 5de0b835-ae48-4653-b93c-23237606481a
+		summarizeBy: none
+		sourceColumn: capital
+
+	column co_cnpj
+		dataType: string
+		lineageTag: 732241fa-ce04-4948-944b-5eb960a491ed
+		sourceColumn: co_cnpj
+
+	column populacao_ref
+		dataType: int64
+		lineageTag: 7ec49cf5-1742-455c-ad21-4edaf38accc3
+		sourceColumn: populacao_ref
+
+	column ano_ref_populacao
+		dataType: int64
+		lineageTag: 30e6ff83-713a-49d8-b4cd-f0a076e0f323
+		sourceColumn: ano_ref_populacao
+
+	column eh_ente_principal
+		dataType: int64
+		lineageTag: d96a21b5-29ab-4874-b0b0-3a9431d300b7
+		summarizeBy: none
+		sourceColumn: eh_ente_principal
+
+	partition dEnte = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    bi_d_ente = Source{[Schema="bi",Item="d_ente"]}[Data]
+				in
+				    bi_d_ente
+

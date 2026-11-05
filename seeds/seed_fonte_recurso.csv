@@ -1,0 +1,65 @@
+cod_fonte,nome_fonte_origem,exercicio_ini,exercicio_fim,cod_fonte_padrao,nome_fonte,grupo,vinculada,eh_total_anexo05
+0,INSUFICIÊNCIA DE CAIXA DO CONSÓRCIO PÚBLICO (VI) = (IV + V),2015,2099,TOT_INSUF_CONSORCIO_VI,Insuficiência de Caixa do Consórcio Público,,0,1
+0,TOTAL (III) = (I + II),2015,2099,TOT_GERAL_III,Total Geral de Disponibilidade de Caixa,,0,1
+0,TOTAL (IV) = (I + II + III),2015,2099,TOT_GERAL_IV,Total Geral de Disponibilidade de Caixa,,0,1
+0,TOTAL DO ENTE MAIS CONSÓRCIO PÚBLICO (VII) = (III + IV),2015,2099,TOT_ENTE_MAIS_CONSORCIO_VII,Total do Ente mais Consórcio Público,,0,1
+0,TOTAL DOS RECURSOS NÃO VINCULADOS (I),2015,2099,TOT_NAO_VINCULADOS_I,Total dos Recursos Não Vinculados,,0,1
+0,TOTAL DOS RECURSOS NÃO VINCULADOS (II),2015,2099,TOT_NAO_VINCULADOS_II,Total dos Recursos Não Vinculados,,0,1
+0,TOTAL DOS RECURSOS NÃO VINCULADOS (V),2015,2099,TOT_NAO_VINCULADOS_V,Total dos Recursos Não Vinculados (Consórcio),,0,1
+0,Total dos Recursos Não Vinculados,2015,2099,TOT_NAO_VINCULADOS,Total dos Recursos Não Vinculados,,0,1
+0,TOTAL DOS RECURSOS VINCULADOS (EXCETO AO RPPS) (II),2015,2099,TOT_VINCULADOS_EXC_RPPS_II,Total dos Recursos Vinculados (Exceto RPPS),,0,1
+0,TOTAL DOS RECURSOS VINCULADOS (I),2015,2099,TOT_VINCULADOS_I,Total dos Recursos Vinculados,,0,1
+0,TOTAL DOS RECURSOS VINCULADOS (II),2015,2099,TOT_VINCULADOS_II,Total dos Recursos Vinculados,,0,1
+0,TOTAL DOS RECURSOS VINCULADOS (IV),2015,2099,TOT_VINCULADOS_IV,Total dos Recursos Vinculados (Consórcio),,0,1
+0,TOTAL DOS RECURSOS VINCULADOS AO RPPS (III),2015,2099,TOT_VINCULADOS_RPPS_III,Total dos Recursos Vinculados ao RPPS,,0,1
+0,Total dos Recursos,2015,2099,TOT_GERAL_SIMPLES,Total Geral de Recursos,,0,1
+0,Total dos Recursos Vinculados,2015,2099,TOT_VINCULADOS,Total dos Recursos Vinculados,,0,1
+1500.00,Recursos Não Vinculados de Impostos,2015,2099,FR_LIVRE,Recursos Não Vinculados (Ordinários / Impostos),LIVRE,0,0
+1500.01,ORDINÁRIO,2015,2099,FR_LIVRE,Recursos Ordinários,LIVRE,0,0
+1500.02,ORDINÁRIO/PRÓPRIO,2015,2099,FR_LIVRE,Recursos Ordinários / Próprios,LIVRE,0,0
+1500.03,PROPRIO,2015,2099,FR_LIVRE,Recursos Próprios,LIVRE,0,0
+1500.04,PRÓPRIO/ORDINÁRIO,2015,2099,FR_LIVRE,Recursos Próprios / Ordinários,LIVRE,0,0
+1500.05,PRÓPRIOS,2015,2099,FR_LIVRE,Recursos Próprios,LIVRE,0,0
+1500.06,Recursos Ordinários - Tesouro,2015,2099,FR_LIVRE,Recursos Ordinários - Tesouro,LIVRE,0,0
+1500.07,Recursos Ordinários,2015,2099,FR_LIVRE,Recursos Ordinários,LIVRE,0,0
+1501.00,Outros Recursos não Vinculados,2015,2099,FR_OUTROS_LIVRES,Outros Recursos Não Vinculados,LIVRE,0,0
+1500.1001,Receitas de Impostos e de Transferência de Impostos - Educação,2015,2099,FR_MDE_IMPOSTOS,Impostos e Transferências - Educação (MDE),EDUCACAO,1,0
+1540.00,Transferências do FUNDEB,2015,2099,FR_FUNDEB,Transferências do FUNDEB,EDUCACAO,1,0
+1540.60,Transferências do FUNDEB 60%,2015,2099,FR_FUNDEB,Transferências do FUNDEB (Magistério 60%),EDUCACAO,1,0
+1540.40,Transferências do FUNDEB 40%,2015,2099,FR_FUNDEB,Transferências do FUNDEB (Demais 40%),EDUCACAO,1,0
+1550.00,Recursos Vinculados à Educação,2015,2099,FR_OUTROS_EDUCACAO,Recursos Vinculados à Educação,EDUCACAO,1,0
+1550.01,Outros Recursos Vinculados à Educação,2015,2099,FR_OUTROS_EDUCACAO,Outros Recursos Vinculados à Educação,EDUCACAO,1,0
+1550.02,Outros Recursos Destinados à Educação,2015,2099,FR_OUTROS_EDUCACAO,Outros Recursos Destinados à Educação,EDUCACAO,1,0
+1500.1002,Receitas de Impostos e de Transferência de Impostos - Saúde,2015,2099,FR_ASPS_IMPOSTOS,Impostos e Transferências - Saúde (ASPS),SAUDE,1,0
+1600.00,Transferências Fundo a Fundo de Recursos do SUS,2015,2099,FR_SUS,Transferências Fundo a Fundo do SUS,SAUDE,1,0
+1600.01,Recursos Vinculados à Saúde,2015,2099,FR_OUTROS_SAUDE,Recursos Vinculados à Saúde,SAUDE,1,0
+1600.02,Outros Recursos Vinculados à Saúde,2015,2099,FR_OUTROS_SAUDE,Outros Recursos Vinculados à Saúde,SAUDE,1,0
+1600.03,Outros Recursos Destinados à Saúde,2015,2099,FR_OUTROS_SAUDE,Outros Recursos Destinados à Saúde,SAUDE,1,0
+1800.00,Recursos Vinculados ao RPPS,2015,2099,FR_RPPS,Recursos Vinculados ao RPPS,PREVIDENCIA,1,0
+1800.01,REGIME PRÓPRIO DE PREVIDÊNCIA DOS SERVIDORES¹,2015,2099,FR_RPPS,Regime Próprio de Previdência dos Servidores (RPPS),PREVIDENCIA,1,0
+1800.10,Recursos Vinculados ao RPPS - Fundo em Capitalização (Plano Previdenciário),2015,2099,FR_RPPS_PREV,RPPS - Fundo em Capitalização (Plano Previdenciário),PREVIDENCIA,1,0
+1800.11,Recursos destinados ao RPPS - Plano Previdenciário,2015,2099,FR_RPPS_PREV,RPPS - Plano Previdenciário,PREVIDENCIA,1,0
+1800.12,Recursos Destinados ao RPPS - Plano Previdenciário,2015,2099,FR_RPPS_PREV,RPPS - Plano Previdenciário,PREVIDENCIA,1,0
+1800.13,Recursos Vinculados ao RPPS - Plano Previdenciário,2015,2099,FR_RPPS_PREV,RPPS - Plano Previdenciário,PREVIDENCIA,1,0
+1801.10,Recursos Vinculados ao RPPS - Fundo em Repartição (Plano Financeiro),2015,2099,FR_RPPS_FIN,RPPS - Fundo em Repartição (Plano Financeiro),PREVIDENCIA,1,0
+1801.11,Recursos Destinados ao RPPS - Plano Financeiro,2015,2099,FR_RPPS_FIN,RPPS - Plano Financeiro,PREVIDENCIA,1,0
+1801.12,Recursos Vinculados ao RPPS - Plano Financeiro,2015,2099,FR_RPPS_FIN,RPPS - Plano Financeiro,PREVIDENCIA,1,0
+1802.00,Recursos Vinculados ao RPPS - Taxa de Administração,2015,2099,FR_RPPS_TAXA_ADM,RPPS - Taxa de Administração,PREVIDENCIA,1,0
+1803.00,Recursos Vinculados à Previdência Social (Exceto ao RPPS),2015,2099,FR_PREV_EXCETO_RPPS,Previdência Social (Exceto RPPS),PREVIDENCIA,1,0
+1660.00,Recursos Vinculados à Assistência Social,2015,2099,FR_ASSISTENCIA_SOCIAL,Recursos Vinculados à Assistência Social,OUTRAS_VINCULADAS,1,0
+1660.01,Recursos Destinados à Assistência Social,2015,2099,FR_ASSISTENCIA_SOCIAL,Recursos Destinados à Assistência Social,OUTRAS_VINCULADAS,1,0
+1700.00,"Transferências de Convênios e Instrumentos Congêneres (exceto Educação, Saúde e Assistência)",2015,2099,FR_CONVENIOS,Transferências de Convênios e Congêneres,OUTRAS_VINCULADAS,1,0
+1754.00,Recursos de Operações de Crédito (exceto vinculados à Educação e à Saúde),2015,2099,FR_OP_CREDITO,Recursos de Operações de Crédito,OUTRAS_VINCULADAS,1,0
+1754.01,Recursos de Operações de Crédito (exceto destinados à Educação e à Saúde),2015,2099,FR_OP_CREDITO,Recursos de Operações de Crédito,OUTRAS_VINCULADAS,1,0
+1755.00,Recursos de Alienação de Bens/Ativos,2015,2099,FR_ALIENACAO_ATIVOS,Recursos de Alienação de Bens/Ativos,OUTRAS_VINCULADAS,1,0
+1759.01,Demais Vinculações Legais,2015,2099,FR_OUTRAS_VINC_LEGAIS,Demais Vinculações Legais,OUTRAS_VINCULADAS,1,0
+1759.02,Outras Vinculações Legais,2015,2099,FR_OUTRAS_VINC_LEGAIS,Outras Vinculações Legais,OUTRAS_VINCULADAS,1,0
+1759.10,Recursos Vinculados a Fundos,2015,2099,FR_FUNDOS_ESPECIAIS,Recursos Vinculados a Fundos,OUTRAS_VINCULADAS,1,0
+1759.11,"Recursos Vinculados a Fundos (exceto Educação, Saúde, Assistência e Previdência)",2015,2099,FR_FUNDOS_ESPECIAIS,Recursos Vinculados a Fundos (Exceto Sociais/Prev.),OUTRAS_VINCULADAS,1,0
+1799.01,Demais Vinculações Decorrentes de Transferências,2015,2099,FR_OUTRAS_TRANSF_VINC,Demais Vinculações Decorrentes de Transferências,OUTRAS_VINCULADAS,1,0
+1799.02,Outras Vinculações Decorrentes de Transferências,2015,2099,FR_OUTRAS_TRANSF_VINC,Outras Vinculações Decorrentes de Transferências,OUTRAS_VINCULADAS,1,0
+1799.10,Outras Destinações Vinculadas de Recursos,2015,2099,FR_OUTRAS_VINC,Outras Destinações Vinculadas de Recursos,OUTRAS_VINCULADAS,1,0
+1799.11,Outras Vinculações,2015,2099,FR_OUTRAS_VINC,Outras Vinculações,OUTRAS_VINCULADAS,1,0
+1799.12,Outros Recursos Vinculados,2015,2099,FR_OUTRAS_VINC,Outros Recursos Vinculados,OUTRAS_VINCULADAS,1,0
+1899.00,Recursos Extraorçamentários,2015,2099,FR_EXTRAORCAMENTARIO,Recursos Extraorçamentários,OUTRAS_VINCULADAS,1,0
+1899.01,Outros Recursos Extraorçamentários,2015,2099,FR_EXTRAORCAMENTARIO,Outros Recursos Extraorçamentários,OUTRAS_VINCULADAS,1,0

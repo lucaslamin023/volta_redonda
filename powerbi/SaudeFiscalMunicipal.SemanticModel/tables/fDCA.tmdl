@@ -1,0 +1,87 @@
+table fDCA
+	lineageTag: dbc901dc-91ab-4c77-85f4-0350aac4ec2f
+
+	column sk_ente
+		dataType: int64
+		isHidden
+		lineageTag: 9c007143-9bf5-4060-af5f-7e1477d0597f
+		sourceColumn: sk_ente
+
+	column sk_data_fim_periodo
+		dataType: int64
+		isHidden
+		lineageTag: 8dd8d985-c69f-4333-a81d-94ed6615cfbd
+		sourceColumn: sk_data_fim_periodo
+
+	column sk_poder
+		dataType: int64
+		isHidden
+		lineageTag: ff645640-b9b8-44f5-b055-04a9636ff886
+		sourceColumn: sk_poder
+
+	column sk_secao
+		dataType: int64
+		isHidden
+		lineageTag: 6c01cc73-86e0-462e-a720-ddf385f7e313
+		sourceColumn: sk_secao
+
+	column sk_conta
+		dataType: int64
+		isHidden
+		lineageTag: 957bac6f-f903-44b9-ac53-916bde573f7c
+		sourceColumn: sk_conta
+
+	column sk_coluna
+		dataType: int64
+		isHidden
+		lineageTag: 2047a42f-82d8-4f8a-bd18-95f5cf399eb3
+		sourceColumn: sk_coluna
+
+	column sk_funcao
+		dataType: int64
+		isHidden
+		lineageTag: 0327c107-5af7-42c7-b21e-a9dc107e87ea
+		sourceColumn: sk_funcao
+
+	column sk_natureza
+		dataType: int64
+		isHidden
+		lineageTag: 83606d9b-92a0-4b6c-bc2e-8d1610dadb26
+		sourceColumn: sk_natureza
+
+	column sk_fonte_recurso
+		dataType: int64
+		isHidden
+		lineageTag: 08aa8dc6-3fef-4270-a957-3f981d886b06
+		sourceColumn: sk_fonte_recurso
+
+	column anexo_codigo
+		dataType: string
+		lineageTag: ba96a43e-c7cc-4527-9f44-f4a2f49bb05b
+		sourceColumn: anexo_codigo
+
+	column valor
+		dataType: decimal
+		isHidden
+		lineageTag: e7e876a4-b327-4a6c-9cd8-09cb1e6b3706
+		sourceColumn: valor
+
+	column eh_vigente
+		dataType: int64
+		lineageTag: 3a755674-782a-469d-a2b0-955bac2aaff5
+		sourceColumn: eh_vigente
+
+	column data_homologacao
+		dataType: dateTime
+		lineageTag: ac3a192b-d12d-45fa-81b8-a6b07b8b5187
+		sourceColumn: data_homologacao
+
+	partition fDCA = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5433", "siconfi_dw"),
+				    view_data = Source{[Schema="bi",Item="f_dca"]}[Data]
+				in
+				    view_data
+

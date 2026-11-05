@@ -1,0 +1,1401 @@
+table _Medidas
+	lineageTag: 7b8dd111-c979-4c99-b0df-db4c6b2b671f
+
+	/// Soma segura das contas folha do RREO sem duplicar subtotais e totais.
+	measure 'Valor Folha RREO' = CALCULATE(SUM(fRREO[valor]), dConta[eh_folha] = 1, fRREO[eh_vigente] = 1)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 6d3e6c63-d503-4907-846d-a57690797b08
+
+	/// Soma irrestrita de valores do RREO vigentes.
+	measure 'Valor Total RREO' = CALCULATE(SUM(fRREO[valor]), fRREO[eh_vigente] = 1)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 8c271ea8-4235-41b2-852d-f97be60c6136
+
+	/// Fluxo do período (bimestre) das contas folha do RREO.
+	measure 'Valor Fluxo RREO' = CALCULATE(SUM(fRREO[valor]), dColuna[tipo_medida] = "FLUXO_PERIODO", dConta[eh_folha] = 1, fRREO[eh_vigente] = 1)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: a51bc0dc-d45f-4166-aabf-6b40a3c08bd9
+
+	/// Fluxo acumulado no exercício das contas folha do RREO na última data disponível do contexto.
+	measure 'Valor Acumulado RREO' =
+			VAR vUltData = CALCULATE(MAX(fRREO[sk_data_fim_periodo]), fRREO[eh_vigente] = 1)
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        SUM(fRREO[valor]),
+			        dColuna[tipo_medida] = "FLUXO_ACUMULADO",
+			        dConta[eh_folha] = 1,
+			        fRREO[eh_vigente] = 1,
+			        dCalendario[sk_data] = vUltData
+			    )
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: a2375fc3-48ad-4095-8074-9dc3b0d79c9a
+
+	/// Saldo ou estoque do RGF na última data disponível do contexto.
+	measure 'Saldo RGF' =
+			VAR vUltData = CALCULATE(MAX(fRGF[sk_data_fim_periodo]), fRGF[eh_vigente] = 1)
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        SUM(fRGF[valor]),
+			        fRGF[eh_vigente] = 1,
+			        dCalendario[sk_data] = vUltData
+			    )
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 2e5ffc58-2d41-45ba-9fe7-550fe1e1c4bb
+
+	/// Valor contábil anual da DCA vigente.
+	measure 'Valor DCA' = CALCULATE(SUM(fDCA[valor]), fDCA[eh_vigente] = 1)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: eb46c6d6-e498-4803-a458-031ab584b2b7
+
+	/// Receita Corrente Líquida oficial acumulada em 12 meses (RREO Anexo 03, estoque na última data disponível do período).
+	measure 'RCL Vigente' =
+			VAR vUltData =
+			    CALCULATE(
+			        MAX(fRREO[sk_data_fim_periodo]),
+			        dSecao[anexo_codigo] = "RREO-03",
+			        dConta[cod_conta] IN {"RREO3ReceitaCorrenteLiquida", "ReceitaCorrenteLiquida"},
+			        dColuna[coluna_padrao] = "TOTAL_ULTIMOS_12_MESES",
+			        fRREO[eh_vigente] = 1
+			    )
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        SUM(fRREO[valor]),
+			        dSecao[anexo_codigo] = "RREO-03",
+			        dConta[cod_conta] IN {"RREO3ReceitaCorrenteLiquida", "ReceitaCorrenteLiquida"},
+			        dColuna[coluna_padrao] = "TOTAL_ULTIMOS_12_MESES",
+			        fRREO[eh_vigente] = 1,
+			        dCalendario[sk_data] = vUltData
+			    )
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 27bb3c0e-d8a9-45d4-80cf-5cc3c82d32f0
+
+	/// População municipal residente do exercício selecionado lida do IBGE/SICONFI (soma segura entre múltiplos entes).
+	measure 'Populacao do Exercicio' =
+			VAR vAno = MAX(dCalendario[ano])
+			RETURN
+			SUMX(
+			    VALUES(dEnte[sk_ente]),
+			    CALCULATE(
+			        MAX(fPopulacao[populacao]),
+			        fPopulacao[exercicio] = vAno
+			    )
+			)
+		formatString: #,##0
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: be7161eb-cf43-4f47-afa2-9c689112870a
+
+	/// Número-índice do IPCA na última data disponível do período selecionado.
+	measure 'IPCA Indice Vigente' =
+			VAR vUltData = MAX(fIPCA[sk_data])
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(MAX(fIPCA[indice]), dCalendario[sk_data] = vUltData)
+			)
+		formatString: #,##0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 3b1297c9-2488-4f34-9b96-523b3dc7ca35
+
+	/// Variação percentual mensal do IPCA no último mês disponível do período.
+	measure 'IPCA Variacao Mensal Pct' =
+			VAR vUltData = MAX(fIPCA[sk_data])
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    DIVIDE(CALCULATE(MAX(fIPCA[variacao_mensal_pct]), dCalendario[sk_data] = vUltData), 100)
+			)
+		formatString: 0.00%
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 31e4572b-f489-495c-87bb-c826da47977b
+
+	/// Q01: Receita Realizada / Previsão Inicial (BO DCA I-C / RREO 01).
+	measure 'Q01 Execucao da Receita' = DIVIDE([Receita Orcamentaria Realizada], [Receita Prevista Inicial])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: f215c890-c3f0-4cd0-9937-c4a767d445e5
+
+	/// Q02: Despesa Liquidada / Fixação Inicial (BO DCA I-D / RREO 01).
+	measure 'Q02 Execucao da Despesa' = DIVIDE([Despesa Orcamentaria Liquidada], [Dotacao Inicial])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: dcbfba48-ca34-484d-8d1f-f2e19431d46d
+
+	/// Q03: Excesso de Arrecadação / Créditos Adicionais Abertos (com guarda de materialidade).
+	measure 'Q03 Cobertura de Creditos Adicionais' =
+			VAR vRecExc = [Receita Orcamentaria Realizada] - [Receita Prevista Inicial]
+			VAR vCredAdic = [Dotacao Atualizada] - [Dotacao Inicial]
+			RETURN
+			IF(vCredAdic <= 0, BLANK(), DIVIDE(vRecExc, vCredAdic))
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 17cc1a57-6475-4c96-902e-331188267d58
+
+	/// Q04: Receita Realizada / Despesa Empenhada (Equilíbrio = 1,00).
+	measure 'Q04 Resultado Orcamentario' = DIVIDE([Receita Orcamentaria Realizada], [Despesa Orcamentaria Empenhada])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 40798fe7-7d28-48ae-b311-de5eb75c4f64
+
+	/// Q05: Receitas Correntes / Despesas Correntes (> 1,00 indica capacidade de poupança corrente).
+	measure 'Q05 Poupanca Corrente' =
+			VAR vRecCorr = COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dConta[cod_conta] IN {"RO1.0.0.0.00.0.0", "ReceitasCorrentes"}, dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "ReceitasCorrentes", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO")
+			)
+			VAR vDespCorr = COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-D", dConta[cod_conta] IN {"DO3.0.00.00.00.00", "DespesasCorrentes"}, dColuna[coluna_padrao] = "DESPESA_LIQUIDADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "DespesasCorrentes", dColuna[coluna_padrao] = "DESPESA_LIQUIDADA_ATE_PERIODO")
+			)
+			RETURN DIVIDE(vRecCorr, vDespCorr)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: fb490761-ccac-4dcb-a27f-1f5b13ec23ae
+
+	/// Q06: Despesas de Capital Liquidadas / Fixadas na LOA.
+	measure 'Q06 Execucao da Despesa de Capital' =
+			VAR vAno = MAX(dCalendario[ano])
+			VAR vDespCapLiq = COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-D", dConta[cod_conta] IN {"DO4.0.00.00.00.00", "DespesasDeCapital"}, dColuna[coluna_padrao] = "DESPESA_LIQUIDADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "DespesasDeCapital", dColuna[coluna_padrao] = "DESPESA_LIQUIDADA_ATE_PERIODO")
+			)
+			VAR vDespCapFix = CALCULATE([Valor Total RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "DespesasDeCapital", dColuna[coluna_padrao] = "DOTACAO_INICIAL", REMOVEFILTERS(dCalendario), dCalendario[ano] = vAno, dCalendario[bimestre] = 1)
+			RETURN DIVIDE(vDespCapLiq, vDespCapFix)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: cd1c14aa-36bb-4e00-8e51-b4764ab410ba
+
+	/// Q07: Receitas de Capital Realizadas / Previstas na LOA.
+	measure 'Q07 Realizacao da Receita de Capital' =
+			VAR vAno = MAX(dCalendario[ano])
+			VAR vRecCapReal = COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dConta[cod_conta] IN {"ReceitasDeCapital", "RO2.0.0.0.00.0.0"}, dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "ReceitasDeCapital", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO")
+			)
+			VAR vRecCapPrev = CALCULATE([Valor Total RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "ReceitasDeCapital", dColuna[coluna_padrao] = "PREVISAO_INICIAL", REMOVEFILTERS(dCalendario), dCalendario[ano] = vAno, dCalendario[bimestre] = 1)
+			RETURN DIVIDE(vRecCapReal, vRecCapPrev)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 411d64d7-516e-4aa5-8515-35e2e3c2e0b5
+
+	/// Q08: Receita Orçamentária Realizada / Despesa Orçamentária Paga (regime de caixa puro).
+	measure 'Q08 Financeiro Real da Execucao' = DIVIDE([Receita Orcamentaria Realizada], [Despesa Orcamentaria Paga])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 71d7809d-a9ab-47a8-8b04-d7dc08c3b442
+
+	/// Q09: Disponibilidade de Caixa Bruta Total / Obrigações Financeiras Totais (RGF-05 Proxy BF sem dupla contagem).
+	measure 'Q09 Execucao Extraorcamentaria' = DIVIDE([Disponibilidade de Caixa Bruta], [Obrigacoes Financeiras RGF])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: f8b0b8e8-1577-456f-8522-97e43a4238e1
+
+	/// Q10: Caixa e Equivalentes (BP P1.1.1) / Obrigações de RP e Extraorçamentárias (RGF-05 Proxy BF).
+	measure 'Q10 Saldo Financeiro para o Exercicio Seguinte' =
+			VAR vCaixaEquiv = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-AB", dConta[cod_conta] = "P1.1.1.0.0.00.00")
+			RETURN DIVIDE(vCaixaEquiv, [Obrigacoes Financeiras RGF])
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 866cc7f9-0c43-417f-9b41-286a27805230
+
+	/// Q11: Evolucao das Disponibilidades de Caixa no Exercicio vs Anterior (DCA-I-AB Proxy BF).
+	measure 'Q11 Relacao Orcamentario Extraorcamentario' =
+			VAR vAnoAtual = SELECTEDVALUE(dCalendario[ano])
+			VAR vCaixaAtual = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-AB", dConta[cod_conta] = "P1.1.1.0.0.00.00")
+			VAR vCaixaAnterior = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-AB", dConta[cod_conta] = "P1.1.1.0.0.00.00", dCalendario[ano] = vAnoAtual - 1, REMOVEFILTERS(dCalendario))
+			RETURN DIVIDE(vCaixaAtual, vCaixaAnterior)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 8abe01ac-34d0-4fc5-aacf-f0f1642ee42a
+
+	/// Q12: Caixa e Equivalentes / Passivo Circulante (BP DCA I-AB).
+	measure 'Q12 Liquidez Imediata' = VAR vCaixa = CALCULATE([Valor DCA], dConta[cod_conta] = "P1.1.1.0.0.00.00") VAR vPC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.1.0.0.0.00.00") RETURN DIVIDE(vCaixa, vPC)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: fffdcdbe-0a49-4756-9bbc-e7e27980ebb6
+
+	/// Q13: Ativo Circulante / Passivo Circulante.
+	measure 'Q13 Liquidez Corrente' = VAR vAC = CALCULATE([Valor DCA], dConta[cod_conta] = "P1.1.0.0.0.00.00") VAR vPC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.1.0.0.0.00.00") RETURN DIVIDE(vAC, vPC)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: a7bab89d-b877-4ca1-8af6-a10a9d2fb474
+
+	/// Q14: (Ativo Circulante + RLP) / (Passivo Circulante + PNC).
+	measure 'Q14 Liquidez Geral' = VAR vAC = CALCULATE([Valor DCA], dConta[cod_conta] = "P1.1.0.0.0.00.00") VAR vRLP = CALCULATE([Valor DCA], dConta[cod_conta] = "P1.2.1.0.0.00.00") VAR vPC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.1.0.0.0.00.00") VAR vPNC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.2.0.0.0.00.00") RETURN DIVIDE(vAC + vRLP, vPC + vPNC)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 70337e4c-70ba-4d72-969e-c7877c7bc077
+
+	/// Q15: Passivo Circulante / Passivo Total Exigível.
+	measure 'Q15 Composicao do Endividamento' = VAR vPC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.1.0.0.0.00.00") VAR vPNC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.2.0.0.0.00.00") RETURN DIVIDE(vPC, vPC + vPNC)
+		formatString: 0.00%
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 54575479-09f3-48bb-971a-3237c54b3e6b
+
+	/// Q16: Patrimônio Líquido / Passivo Não Circulante (monitora Passivo a Descoberto).
+	measure 'Q16 Cobertura Patrimonial do PNC' = VAR vPL = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.3.0.0.0.00.00") VAR vPNC = CALCULATE([Valor DCA], dConta[cod_conta] = "P2.2.0.0.0.00.00") RETURN DIVIDE(vPL, vPNC)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 00d11388-5944-4195-a849-efa95913d1bc
+
+	/// Q17: Ativo Financeiro / Passivo Financeiro (art. 43 Lei 4.320/64).
+	measure 'Q17 Situacao Financeira Superavit Financeiro' = VAR vAF = CALCULATE([Valor DCA], dConta[cod_conta] = "AtivoFinanceiro") VAR vPF = CALCULATE([Valor DCA], dConta[cod_conta] = "PassivoFinanceiro") RETURN DIVIDE(vAF, vPF)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 44a6b1df-963d-4e62-80d8-6f698a8395db
+
+	/// Q18: Ativo Permanente / Passivo Permanente.
+	measure 'Q18 Situacao Permanente' = VAR vAP = CALCULATE([Valor DCA], dConta[cod_conta] = "AtivoPermanente") VAR vPP = CALCULATE([Valor DCA], dConta[cod_conta] = "PassivoPermanente") RETURN DIVIDE(vAP, vPP)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 37c9a9b1-4308-496f-8481-4b0253941880
+
+	/// Q19: VPA Extraordinária / VPD Extraordinária (DVP DCA I-HI).
+	measure 'Q19 Variacoes Patrimoniais Extraordinarias' = VAR vGanhos = CALCULATE([Valor DCA], dConta[cod_conta] = "P4.5.0.0.0.00.00") VAR vPerdas = CALCULATE([Valor DCA], dConta[cod_conta] = "P3.5.0.0.0.00.00") RETURN DIVIDE(vGanhos, vPerdas)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 0c64f4ab-631f-4aef-9f20-573dd33b581c
+
+	/// Q20: Total VPA / Total VPD (> 1,00 indica superávit patrimonial).
+	measure 'Q20 Resultado Patrimonial DVP' = VAR vVPA = CALCULATE([Valor DCA], dConta[cod_conta] = "P4.0.0.0.0.00.00") VAR vVPD = CALCULATE([Valor DCA], dConta[cod_conta] = "P3.0.0.0.0.00.00") RETURN DIVIDE(vVPA, vVPD)
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: bcd516b9-69fd-4da5-84cf-c5ba1a287d82
+
+	/// Valor recalculado do indicador fiscal LRF/Constitucional na última data disponível (em formato percentual decimal 0-1).
+	measure 'Indicador Valor Recalculado Pct' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vVal = CALCULATE(MAX(fIndicador[valor_indicador]), dCalendario[sk_data] = vUltData)
+			VAR vUnid = SELECTEDVALUE(dIndicador[unidade], "PERCENTUAL")
+			RETURN
+			IF(ISBLANK(vUltData), BLANK(), IF(vUnid = "PERCENTUAL", DIVIDE(vVal, 100), vVal))
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 735623a8-46cb-41ed-bc3e-b924ecf202db
+
+	/// Valor declarado pelo município no demonstrativo original na última data disponível (em formato percentual decimal 0-1).
+	measure 'Indicador Valor Declarado Pct' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vVal = CALCULATE(MAX(fIndicador[valor_declarado]), dCalendario[sk_data] = vUltData)
+			VAR vUnid = SELECTEDVALUE(dIndicador[unidade], "PERCENTUAL")
+			RETURN
+			IF(ISBLANK(vUltData), BLANK(), IF(vUnid = "PERCENTUAL", DIVIDE(vVal, 100), vVal))
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: eec87486-7746-45fa-ba8d-3352276f8c51
+
+	/// Divergência entre recalculado e declarado em pontos percentuais na última data disponível.
+	measure 'Indicador Diferenca Declarado pp' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			RETURN
+			IF(ISBLANK(vUltData), BLANK(), CALCULATE(MAX(fIndicador[diferenca_declarado]), dCalendario[sk_data] = vUltData))
+		formatString: +0.00;-0.00;0.00
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 5ea48c7a-1457-4c07-8b90-9dadd1b92fdf
+
+	/// Percentual do limite legal lido dinamicamente de dLimiteLRF via TREATAS (zero constantes hardcoded).
+	measure 'Indicador Limite Legal Pct' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vLim =
+			    CALCULATE(
+			        MAX(dLimiteLRF[percentual_limite]),
+			        TREATAS(CALCULATETABLE(VALUES(fIndicador[sk_limite]), dCalendario[sk_data] = vUltData), dLimiteLRF[sk_limite])
+			    )
+			RETURN DIVIDE(vLim, 100)
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: aae3a1c2-6e85-4e7c-80aa-0e46a20fbf36
+
+	/// Percentual do limite de alerta (90% LRF) lido dinamicamente de dLimiteLRF via TREATAS.
+	measure 'Indicador Limite Alerta Pct' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vLim =
+			    CALCULATE(
+			        MAX(dLimiteLRF[pct_alerta]),
+			        TREATAS(CALCULATETABLE(VALUES(fIndicador[sk_limite]), dCalendario[sk_data] = vUltData), dLimiteLRF[sk_limite])
+			    )
+			RETURN DIVIDE(vLim, 100)
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 08fe75ef-79c7-4d4b-89fa-2cfd6523734f
+
+	/// Percentual do limite prudencial (95% LRF) lido dinamicamente de dLimiteLRF via TREATAS.
+	measure 'Indicador Limite Prudencial Pct' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vLim =
+			    CALCULATE(
+			        MAX(dLimiteLRF[pct_prudencial]),
+			        TREATAS(CALCULATETABLE(VALUES(fIndicador[sk_limite]), dCalendario[sk_data] = vUltData), dLimiteLRF[sk_limite])
+			    )
+			RETURN DIVIDE(vLim, 100)
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 98443888-8525-46e3-8939-ffdccaf823f8
+
+	/// Distância em pontos percentuais até o limite legal na última data disponível.
+	measure 'Indicador Margem ao Limite pp' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			RETURN
+			IF(ISBLANK(vUltData), BLANK(), CALCULATE(MAX(fIndicador[margem_ao_limite]), dCalendario[sk_data] = vUltData))
+		formatString: +0.00;-0.00;0.00
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: c6f710d8-1598-44fb-ad1a-0f9157a7b258
+
+	/// Classificação da situação legal na última data disponível: OK, ALERTA, PRUDENCIAL ou ACIMA_LIMITE.
+	measure 'Indicador Status Limite' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			RETURN
+			IF(ISBLANK(vUltData), "N/A", CALCULATE(SELECTEDVALUE(fIndicador[status_limite], "MULTIPLOS"), dCalendario[sk_data] = vUltData))
+		formatString: @
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: a6910062-00d7-4d99-8948-1b3295341068
+
+	/// Receitas Próprias (Tributária/Patrimonial/Serviços) / Receitas Correntes Totais (DCA I-C com fallback RREO-01).
+	measure 'Indice de Autonomia Fiscal Pct' =
+			VAR vPropDCA = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA", dConta[eh_folha] = 1, dConta[grupo_analitico] = "RECEITA_PROPRIA")
+			VAR vTotDCA = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA", dConta[cod_conta] IN {"RO1.0.0.0.00.0.0", "ReceitasCorrentes"})
+			VAR vPropRREO = CALCULATE([Valor Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO", dConta[grupo_analitico] = "RECEITA_PROPRIA")
+			VAR vTotRREO = CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO", dConta[cod_conta] = "ReceitasCorrentes")
+			RETURN
+			IF(NOT ISBLANK(vTotDCA), DIVIDE(vPropDCA, vTotDCA), DIVIDE(vPropRREO, vTotRREO))
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 670e5862-9238-46fe-a3fe-10ed7ede4c70
+
+	/// Transferências Correntes (União, Estado, FUNDEB, SUS) / Receitas Correntes Totais (DCA I-C com fallback RREO-01).
+	measure 'Dependencia de Transferencias Pct' =
+			VAR vTransfDCA = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA", dConta[eh_folha] = 1, dConta[grupo_analitico] IN {"TRANSFERENCIAS_UNIAO", "TRANSFERENCIAS_ESTADO", "TRANSFERENCIAS_FUNDEB", "TRANSFERENCIAS_SUS"})
+			VAR vTotDCA = CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA", dConta[cod_conta] IN {"RO1.0.0.0.00.0.0", "ReceitasCorrentes"})
+			VAR vTransfRREO = CALCULATE([Valor Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO", dConta[grupo_analitico] IN {"TRANSFERENCIAS_UNIAO", "TRANSFERENCIAS_ESTADO", "TRANSFERENCIAS_FUNDEB", "TRANSFERENCIAS_SUS"})
+			VAR vTotRREO = CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO", dConta[cod_conta] = "ReceitasCorrentes")
+			RETURN
+			COALESCE(DIVIDE(vTransfDCA, vTotDCA), DIVIDE(vTransfRREO, vTotRREO))
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: d3ee43c9-60f8-4ccf-b638-d54b9ac6da3f
+
+	/// Disponibilidade de Caixa Líquida (Antes de RPNP) de Recursos Não Vinculados / Livres no RGF-05.
+	measure 'Suficiencia de Caixa Livre' =
+			CALCULATE(
+			    [Saldo Folha RGF],
+			    dSecao[anexo_codigo] = "RGF-05",
+			    dColuna[coluna_padrao] = "CAIXA_LIQUIDA_ANTES_RPNP",
+			    dFonteRecurso[vinculada] = 0,
+			    dFonteRecurso[cod_fonte_padrao] <> "0"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: cfafeec0-8595-4131-84d6-78464f08d2d3
+
+	/// Disponibilidade de Caixa Líquida (Antes de RPNP) de Recursos Vinculados no RGF-05.
+	measure 'Suficiencia de Caixa Vinculada' =
+			CALCULATE(
+			    [Saldo Folha RGF],
+			    dSecao[anexo_codigo] = "RGF-05",
+			    dColuna[coluna_padrao] = "CAIXA_LIQUIDA_ANTES_RPNP",
+			    dFonteRecurso[vinculada] = 1,
+			    dFonteRecurso[cod_fonte_padrao] <> "0"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: c2046171-e15a-4a96-ac56-aec4b0eb6e32
+
+	/// Data e hora de término da última carga do pipeline com sucesso.
+	measure 'Ultima Carga com Sucesso' = CALCULATE(MAX(etlControle[fim]), etlControle[status] = "SUCESSO")
+		formatString: dd/mm/yyyy hh:nn:ss
+		displayFolder: 04. Metadados & Auditoria
+		lineageTag: d53f01e2-d6d7-4cbb-8c87-08db458eb48e
+
+	/// Total de linhas Gold publicadas na última execução homologada.
+	measure 'Total Linhas Publicadas DW' = CALCULATE(MAX(etlControle[linhas_gold]), etlControle[status] = "SUCESSO")
+		formatString: #,##0
+		displayFolder: 04. Metadados & Auditoria
+		lineageTag: 76e4e4e1-3263-4d35-b063-19fed43f6cbb
+
+	/// Quantidade total de alertas contábeis auditados registrados na suíte de qualidade.
+	measure 'Qtd Alertas Qualidade' = COUNTROWS(fQualidade)
+		formatString: #,##0
+		displayFolder: 04. Metadados & Auditoria
+		lineageTag: b58f6865-81d2-4d7a-bec0-306db6cd0f4c
+
+	/// Quantidade de violações bloqueantes no DW (deve ser sempre 0).
+	measure 'Qtd Alertas Bloqueantes' = CALCULATE(COUNTROWS(fQualidade), fQualidade[severidade] = "BLOQUEANTE") + 0
+		formatString: #,##0
+		displayFolder: 04. Metadados & Auditoria
+		lineageTag: 155ba4a6-646c-458d-8a7c-4fd24fe89244
+
+	/// Indica explicitamente se o município entregou o demonstrativo no período.
+	measure 'Status Entrega Periodo' = IF(ISBLANK([Valor Total RREO]), "SEM_ENTREGA", "HOMOLOGADO")
+		formatString: @
+		displayFolder: 04. Metadados & Auditoria
+		lineageTag: b6dde6de-8457-4e6b-bfc0-cb0b8e3b9138
+
+	/// Data base selecionada para deflação monetária via IPCA.
+	measure 'Data Base IPCA Selecionada' = COALESCE(MAX(pDataBaseIPCA[data]), CALCULATE(MAX(dCalendario[data]), fIPCA))
+		formatString: dd/mm/yyyy
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 4d9b5ee0-1ef6-466d-a178-197d69a6f5f1
+
+	/// Valor acumulado no RREO na última data disponível do contexto (permite filtrar contas sintéticas/totais ou analíticas).
+	measure 'Valor Total Acumulado RREO' =
+			VAR vUltData = CALCULATE(MAX(fRREO[sk_data_fim_periodo]), fRREO[eh_vigente] = 1)
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        SUM(fRREO[valor]),
+			        fRREO[eh_vigente] = 1,
+			        dCalendario[sk_data] = vUltData
+			    )
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: ce849640-2c9e-4f41-b992-898446b4dc19
+
+	/// Saldo/estoque das contas folha do RGF na última data disponível do contexto (evita dupla contagem de subtotais TOT_*).
+	measure 'Saldo Folha RGF' =
+			VAR vUltData = CALCULATE(MAX(fRGF[sk_data_fim_periodo]), fRGF[eh_vigente] = 1)
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        SUM(fRGF[valor]),
+			        dConta[eh_folha] = 1,
+			        fRGF[eh_vigente] = 1,
+			        dCalendario[sk_data] = vUltData
+			    )
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 6ae65f78-ffa6-4407-9742-3150d01107de
+
+	/// Receita Orçamentária Total Realizada (anual via DCA I-C com fallback intra-ano automático via RREO-01).
+	measure 'Receita Orcamentaria Realizada' =
+			COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-C", dConta[cod_conta] = "TotalReceitas", dColuna[coluna_padrao] = "RECEITA_BRUTA_REALIZADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "TotalReceitas", dColuna[coluna_padrao] = "RECEITA_ATE_PERIODO")
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 627d8719-bf4f-4f42-9581-606b0cafdcc2
+
+	/// Previsão Inicial da Receita Orçamentária na LOA (1º Bimestre do RREO-01).
+	measure 'Receita Prevista Inicial' =
+			VAR vAno = MAX(dCalendario[ano])
+			RETURN
+			CALCULATE(
+			    [Valor Total RREO],
+			    dSecao[anexo_codigo] = "RREO-01",
+			    dConta[cod_conta] = "TotalReceitas",
+			    dColuna[coluna_padrao] = "PREVISAO_INICIAL",
+			    REMOVEFILTERS(dCalendario),
+			    dCalendario[ano] = vAno,
+			    dCalendario[bimestre] = 1
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 38edb93b-f6dd-493a-914a-ee660f3e755b
+
+	/// Previsão Atualizada da Receita Orçamentária no RREO-01 (último bimestre disponível do período).
+	measure 'Receita Prevista Atualizada' =
+			CALCULATE(
+			    [Valor Total Acumulado RREO],
+			    dSecao[anexo_codigo] = "RREO-01",
+			    dConta[cod_conta] = "TotalReceitas",
+			    dColuna[coluna_padrao] = "PREVISAO_ATUALIZADA"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 7996cfcd-034a-436c-83ac-65f9b9cdacff
+
+	/// Despesa Orçamentária Total Empenhada (anual via DCA I-D com fallback intra-ano automático via RREO-01).
+	measure 'Despesa Orcamentaria Empenhada' =
+			COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-D", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_EMPENHADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_EMPENHADA_ATE_PERIODO")
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: fd556c94-738c-4ae5-9ac4-4abbaac9ee11
+
+	/// Despesa Orçamentária Total Liquidada (anual via DCA I-D com fallback intra-ano automático via RREO-01).
+	measure 'Despesa Orcamentaria Liquidada' =
+			COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-D", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_LIQUIDADA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_LIQUIDADA_ATE_PERIODO")
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: ce6c38ba-7e3e-4625-96e6-bfc01dd6b547
+
+	/// Despesa Orçamentária Total Paga (anual via DCA I-D com fallback intra-ano automático via RREO-01).
+	measure 'Despesa Orcamentaria Paga' =
+			COALESCE(
+			    CALCULATE([Valor DCA], dSecao[anexo_codigo] = "DCA-I-D", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_PAGA"),
+			    CALCULATE([Valor Total Acumulado RREO], dSecao[anexo_codigo] = "RREO-01", dConta[cod_conta] = "TotalDespesas", dColuna[coluna_padrao] = "DESPESA_PAGA_ATE_PERIODO")
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 181b5d90-0694-415f-8a9e-b6e65fe57f36
+
+	/// Dotação Inicial da Despesa Orçamentária na LOA (1º Bimestre do RREO-01).
+	measure 'Dotacao Inicial' =
+			VAR vAno = MAX(dCalendario[ano])
+			RETURN
+			CALCULATE(
+			    [Valor Total RREO],
+			    dSecao[anexo_codigo] = "RREO-01",
+			    dConta[cod_conta] = "TotalDespesas",
+			    dColuna[coluna_padrao] = "DOTACAO_INICIAL",
+			    REMOVEFILTERS(dCalendario),
+			    dCalendario[ano] = vAno,
+			    dCalendario[bimestre] = 1
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 7fd04faf-dbc7-441a-b65f-b3ce4d264c00
+
+	/// Dotação Atualizada da Despesa Orçamentária no RREO-01 (último bimestre disponível do período).
+	measure 'Dotacao Atualizada' =
+			CALCULATE(
+			    [Valor Total Acumulado RREO],
+			    dSecao[anexo_codigo] = "RREO-01",
+			    dConta[cod_conta] = "TotalDespesas",
+			    dColuna[coluna_padrao] = "DOTACAO_ATUALIZADA"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: d8fb5f11-e0e2-46d5-a48a-e0267064d8ac
+
+	/// Disponibilidade de Caixa Bruta por Fonte de Recurso no RGF-05 (contas folha sem duplicação).
+	measure 'Disponibilidade de Caixa Bruta' =
+			CALCULATE(
+			    [Saldo Folha RGF],
+			    dSecao[anexo_codigo] = "RGF-05",
+			    dColuna[coluna_padrao] = "CAIXA_BRUTA",
+			    dFonteRecurso[cod_fonte_padrao] <> "0"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 09541779-79e3-40b8-869c-ecfd5b7dd9db
+
+	/// Total de Obrigações Financeiras (RP Liquidados Não Pagos + Demais Obrigações) por Fonte no RGF-05.
+	measure 'Obrigacoes Financeiras RGF' =
+			CALCULATE(
+			    [Saldo Folha RGF],
+			    dSecao[anexo_codigo] = "RGF-05",
+			    dColuna[coluna_padrao] IN {"RP_LIQUIDADOS_NAO_PAGOS_EXERCICIO", "RP_LIQUIDADOS_NAO_PAGOS_EX_ANT", "DEMAIS_OBRIGACOES_FINANCEIRAS"},
+			    dFonteRecurso[cod_fonte_padrao] <> "0"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 8019e4f8-c080-47fd-b7c2-da995ed71d46
+
+	/// Disponibilidade de Caixa Líquida Após Inscrição de RPNP por Fonte de Recurso no RGF-05.
+	measure 'Disponibilidade de Caixa Liquida Apos RP' =
+			CALCULATE(
+			    [Saldo Folha RGF],
+			    dSecao[anexo_codigo] = "RGF-05",
+			    dColuna[coluna_padrao] = "CAIXA_LIQUIDA_APOS_RPNP",
+			    dFonteRecurso[cod_fonte_padrao] <> "0"
+			)
+		formatString: "R$"\\ #,0.00;("R$"\\ #,0.00);"R$"\\ #,0.00
+		displayFolder: 01. Base & Aditividade Segura
+		lineageTag: 6f489c66-411b-49a6-8c7e-7e60aa73f951
+
+	/// Linha guia constante em 1,0000 para referência de equilíbrio nos Quocientes de Kohama (Q01 a Q20).
+	measure 'Linha Referencia Equilibrio' = 1.0
+		formatString: 0.0000
+		displayFolder: 02. Os 20 Quocientes Contábeis
+		lineageTag: 2160b2a1-6507-43d2-bbec-1d250a45df5e
+
+	/// Percentual da despesa empenhada que foi efetivamente liquidada no período.
+	measure 'Grau de Liquidacao Pct' = DIVIDE([Despesa Orcamentaria Liquidada], [Despesa Orcamentaria Empenhada])
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: e12fe998-8994-4909-afb0-fb194df346b3
+
+	/// Percentual da despesa liquidada que foi efetivamente paga no período.
+	measure 'Grau de Pagamento Pct' = DIVIDE([Despesa Orcamentaria Paga], [Despesa Orcamentaria Liquidada])
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 63601532-9249-4f7e-b5f9-f02d76652246
+
+	/// Taxa de execução da receita realizada frente à previsão atualizada (acompanhamento intra-ano).
+	measure 'Taxa Execucao Receita Atualizada Pct' = DIVIDE([Receita Orcamentaria Realizada], [Receita Prevista Atualizada])
+		formatString: 0.00%
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: 1be600aa-5774-4c3d-8441-186163a33a82
+
+	/// Síntese executiva de conformidade fiscal LRF/Constitucional no período: IDEAL, ALERTA ou CRÍTICO.
+	measure 'Scorecard Status Geral' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vCriticos = CALCULATE(COUNTROWS(fIndicador), dCalendario[sk_data] = vUltData, fIndicador[status_limite] = "ACIMA_LIMITE")
+			VAR vAlertas = CALCULATE(COUNTROWS(fIndicador), dCalendario[sk_data] = vUltData, fIndicador[status_limite] IN {"ALERTA", "PRUDENCIAL"})
+			RETURN
+			SWITCH(
+			    TRUE(),
+			    ISBLANK(vUltData), "SEM DADOS",
+			    vCriticos > 0, "CRÍTICO",
+			    vAlertas > 0, "ALERTA",
+			    "IDEAL"
+			)
+		formatString: @
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: e3f7dd2b-412d-49dd-82dc-bcb44f4ce467
+
+	/// Quantidade de indicadores LRF/Constitucionais em situação de Alerta, Prudencial ou Acima do Limite na última data do período.
+	measure 'Qtd Indicadores Criticos ou Alerta' =
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			RETURN
+			IF(
+			    ISBLANK(vUltData),
+			    BLANK(),
+			    CALCULATE(
+			        COUNTROWS(fIndicador),
+			        dCalendario[sk_data] = vUltData,
+			        fIndicador[status_limite] IN {"ALERTA", "PRUDENCIAL", "ACIMA_LIMITE"}
+			    ) + 0
+			)
+		formatString: #,##0
+		displayFolder: 03. Indicadores LRF e Limites
+		lineageTag: b9fe3f9b-4c58-427f-b579-825612e03294
+
+	/// Variação percentual da Receita Orçamentária Realizada vs. ano anterior (respeita cgEscalaValor).
+	measure 'Receita Orcamentaria Realizada YoY Pct' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAtual = [Receita Orcamentaria Realizada]
+			VAR vLY = CALCULATE([Receita Orcamentaria Realizada], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAtual - 1)
+			RETURN
+			DIVIDE(vAtual - vLY, vLY)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 660d5ec0-9cad-432e-9847-f6b4ce4fcb33
+
+	/// Rótulo formatado com seta da variação da Receita Orçamentária vs. ano anterior (ex: ▲ +4,4% vs. 2023).
+	measure 'Receita Orcamentaria Realizada YoY Label' =
+			VAR vVar = [Receita Orcamentaria Realizada YoY Pct]
+			VAR vAnoAnterior = MAX(dCalendario[ano]) - 1
+			RETURN
+			IF(
+			    ISBLANK(vVar),
+			    "-",
+			    IF(
+			        vVar > 0,
+			        "▲ +" & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			        IF(
+			            vVar < 0,
+			            "▼ " & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			            "► 0.0% vs. " & vAnoAnterior
+			        )
+			    )
+			)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: a3027cce-b1ee-403d-a99b-096532722de6
+
+	/// Cor hexadecimal para formatação condicional da variação da Receita (Verde se positivo, Vermelho se negativo).
+	measure 'Receita Orcamentaria Realizada YoY Cor' =
+			VAR vVar = [Receita Orcamentaria Realizada YoY Pct]
+			RETURN
+			IF(ISBLANK(vVar), "#64748B", IF(vVar >= 0, "#10B981", "#EF4444"))
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: baed10dc-85aa-451b-9e47-b16b748e89e6
+
+	/// Variação percentual da Despesa Orçamentária Empenhada vs. ano anterior (respeita cgEscalaValor).
+	measure 'Despesa Orcamentaria Empenhada YoY Pct' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAtual = [Despesa Orcamentaria Empenhada]
+			VAR vLY = CALCULATE([Despesa Orcamentaria Empenhada], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAtual - 1)
+			RETURN
+			DIVIDE(vAtual - vLY, vLY)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 220bc447-883e-4dc2-9f72-a95da0b9abcb
+
+	/// Rótulo formatado com seta da variação da Despesa Orçamentária vs. ano anterior (ex: ▲ +3,2% vs. 2023).
+	measure 'Despesa Orcamentaria Empenhada YoY Label' =
+			VAR vVar = [Despesa Orcamentaria Empenhada YoY Pct]
+			VAR vAnoAnterior = MAX(dCalendario[ano]) - 1
+			RETURN
+			IF(
+			    ISBLANK(vVar),
+			    "-",
+			    IF(
+			        vVar > 0,
+			        "▲ +" & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			        IF(
+			            vVar < 0,
+			            "▼ " & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			            "► 0.0% vs. " & vAnoAnterior
+			        )
+			    )
+			)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: cdefbee1-f426-4e2c-893c-d70fe477ac05
+
+	/// Cor hexadecimal da Despesa (Verde se redução <= 0, Vermelho se expansão > 0).
+	measure 'Despesa Orcamentaria Empenhada YoY Cor' =
+			VAR vVar = [Despesa Orcamentaria Empenhada YoY Pct]
+			RETURN
+			IF(ISBLANK(vVar), "#64748B", IF(vVar <= 0, "#10B981", "#EF4444"))
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: aa217413-5db3-4bb2-8641-d3c97d88ab12
+
+	/// Variação percentual da Receita Corrente Líquida Vigente vs. ano anterior (respeita cgEscalaValor).
+	measure 'RCL Vigente YoY Pct' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAtual = [RCL Vigente]
+			VAR vLY = CALCULATE([RCL Vigente], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAtual - 1)
+			RETURN
+			DIVIDE(vAtual - vLY, vLY)
+		formatString: +0.0%;-0.0%;0.0%
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 5e3d4a08-87f0-4fd3-b4ed-c405655b15df
+
+	/// Rótulo formatado com seta da variação da RCL vs. ano anterior (ex: ▲ +5,1% vs. 2023).
+	measure 'RCL Vigente YoY Label' =
+			VAR vVar = [RCL Vigente YoY Pct]
+			VAR vAnoAnterior = MAX(dCalendario[ano]) - 1
+			RETURN
+			IF(
+			    ISBLANK(vVar),
+			    "-",
+			    IF(
+			        vVar > 0,
+			        "▲ +" & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			        IF(
+			            vVar < 0,
+			            "▼ " & FORMAT(vVar, "0.0%") & " vs. " & vAnoAnterior,
+			            "► 0.0% vs. " & vAnoAnterior
+			        )
+			    )
+			)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 0633055e-85ae-4f13-91a0-42ed4a762053
+
+	/// Cor hexadecimal da RCL (Verde se positivo >= 0, Vermelho se negativo < 0).
+	measure 'RCL Vigente YoY Cor' =
+			VAR vVar = [RCL Vigente YoY Pct]
+			RETURN
+			IF(ISBLANK(vVar), "#64748B", IF(vVar >= 0, "#10B981", "#EF4444"))
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: cb610a19-3a24-4d08-bd6c-a50c4f6cdfc9
+
+	/// Variação nominal absoluta da Suficiência de Caixa Livre vs. ano anterior (respeita cgEscalaValor).
+	measure 'Suficiencia de Caixa Livre YoY Var' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAtual = [Suficiencia de Caixa Livre]
+			VAR vLY = CALCULATE([Suficiencia de Caixa Livre], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAtual - 1)
+			RETURN
+			IF(ISBLANK(vAtual) || ISBLANK(vLY), BLANK(), vAtual - vLY)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 4205905c-657d-4519-bea1-575764543ac4
+
+	/// Rótulo formatado com seta da variação da Suficiência de Caixa Livre vs. ano anterior.
+	measure 'Suficiencia de Caixa Livre YoY Label' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAnoAnterior = vAnoAtual - 1
+			VAR vAtual = [Suficiencia de Caixa Livre]
+			VAR vLY = CALCULATE([Suficiencia de Caixa Livre], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAnterior)
+			VAR vDif = vAtual - vLY
+			VAR vPct = DIVIDE(vDif, ABS(vLY))
+			RETURN
+			IF(
+			    ISBLANK(vAtual) || ISBLANK(vLY),
+			    "-",
+			    IF(
+			        vDif > 0,
+			        "▲ +" & FORMAT(vPct, "0.0%") & " vs. " & vAnoAnterior,
+			        IF(
+			            vDif < 0,
+			            "▼ " & FORMAT(vPct, "0.0%") & " vs. " & vAnoAnterior,
+			            "► 0.0% vs. " & vAnoAnterior
+			        )
+			    )
+			)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: b9938eaf-1bc5-4e8a-982f-9ddf3d25ab98
+
+	/// Cor hexadecimal da Suficiência de Caixa Livre (Verde se positivo >= 0, Vermelho se negativo < 0).
+	measure 'Suficiencia de Caixa Livre YoY Cor' =
+			VAR vDif = [Suficiencia de Caixa Livre YoY Var]
+			RETURN
+			IF(ISBLANK(vDif), "#64748B", IF(vDif >= 0, "#10B981", "#EF4444"))
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: f9b18d0b-5158-470d-90df-a98ac64998d1
+
+	/// Variação percentual da População Municipal vs. ano anterior.
+	measure 'Populacao do Exercicio YoY Pct' =
+			VAR vAnoAtual = MAX(dCalendario[ano])
+			VAR vAtual = [Populacao do Exercicio]
+			VAR vLY = CALCULATE([Populacao do Exercicio], REMOVEFILTERS(dCalendario), dCalendario[ano] = vAnoAtual - 1)
+			RETURN
+			DIVIDE(vAtual - vLY, vLY)
+		formatString: +0.00%;-0.00%;0.00%
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 21c004da-d1d6-4692-b0af-1b1f221630aa
+
+	/// Rótulo formatado com seta da variação da População vs. ano anterior.
+	measure 'Populacao do Exercicio YoY Label' =
+			VAR vVar = [Populacao do Exercicio YoY Pct]
+			VAR vAnoAnterior = MAX(dCalendario[ano]) - 1
+			RETURN
+			IF(
+			    ISBLANK(vVar),
+			    "-",
+			    IF(
+			        vVar > 0,
+			        "▲ +" & FORMAT(vVar, "0.00%") & " vs. " & vAnoAnterior,
+			        IF(
+			            vVar < 0,
+			            "▼ " & FORMAT(vVar, "0.00%") & " vs. " & vAnoAnterior,
+			            "► 0.00% vs. " & vAnoAnterior
+			        )
+			    )
+			)
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 5dbd50d6-8d03-457b-a19c-2ca55f997e99
+
+	/// Cor hexadecimal da População (Verde se crescimento, Cinza se estável/queda).
+	measure 'Populacao do Exercicio YoY Cor' =
+			VAR vVar = [Populacao do Exercicio YoY Pct]
+			RETURN
+			IF(ISBLANK(vVar), "#64748B", IF(vVar >= 0, "#10B981", "#64748B"))
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: a5957152-3f39-4e6b-ac80-d19072785c25
+
+	/// Sparkline SVG com gradiente da Receita Orçamentária Realizada (últimos 5 anos).
+	measure 'Receita Orcamentaria Realizada Sparkline SVG' = ```
+			VAR svg_width = 150  -- Control width
+			VAR svg_height = 50  -- Control height
+			VAR stroke_color = "#2563EB" --Control Sparkline Stroke Color
+			VAR gradient_color = "#93C5FD" --Control Sparkline Gradient Color
+			VAR grad_id = "grad_rec"
+			
+			VAR vAnoMax = MAX(dCalendario[ano])
+			VAR vAnoMin = vAnoMax - 4
+			
+			VAR InputTable =  -- Input Columns
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            SUMMARIZECOLUMNS(
+			                dCalendario[ano],
+			                "Y", [Receita Orcamentaria Realizada]
+			            ),
+			            "X", dCalendario[ano],
+			            "Y", [Y]
+			        ),
+			        REMOVEFILTERS(dCalendario),
+			        dCalendario[ano] >= vAnoMin && dCalendario[ano] <= vAnoMax
+			    )
+			
+			VAR NonBlankData =
+			    ADDCOLUMNS(
+			        InputTable,
+			        "Y_Adj", IF(ISBLANK([Y]), 0, [Y])
+			    )
+			
+			VAR RankedData =
+			    ADDCOLUMNS(
+			        NonBlankData,
+			        "X_Rank", RANKX(NonBlankData, [X], , ASC)
+			    )
+			
+			VAR TotalPoints = COUNTROWS(RankedData)
+			VAR MaxIndex = TotalPoints - 1
+			VAR SpacedPoints =
+			    ADDCOLUMNS(
+			        RankedData,
+			        "XPos", 
+			            IF(MaxIndex <= 0, svg_width * 0.5, DIVIDE(([X_Rank] - 1), MaxIndex) * svg_width)
+			    )
+			
+			VAR MinY = MINX(SpacedPoints, [Y_Adj])
+			VAR MaxY = MAXX(SpacedPoints, [Y_Adj])
+			
+			VAR PointsWithYPos =
+			    ADDCOLUMNS(
+			        SpacedPoints,
+			        "YPos",
+			        IF(
+			            MaxY = MinY,
+			            svg_height * 0.5,
+			            svg_height - 6 - DIVIDE([Y_Adj] - MinY, MaxY - MinY) * (svg_height - 12)
+			        )
+			    )
+			
+			VAR PolylinePoints =
+			    CONCATENATEX(
+			        PointsWithYPos,
+			        SUBSTITUTE(FORMAT([XPos], "0.0"), ",", ".") & "," & SUBSTITUTE(FORMAT([YPos], "0.0"), ",", "."),
+			        " ",
+			        [X],
+			        ASC
+			    )
+			
+			VAR FirstX = SUBSTITUTE(FORMAT(MINX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR LastX = SUBSTITUTE(FORMAT(MAXX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR PolygonPoints =
+			    FirstX & "," & svg_height & " " & PolylinePoints & " " & LastX & "," & svg_height
+			
+			VAR Svg =
+			    "<svg width='" & svg_width & "' height='" & svg_height & "' viewBox='0 0 " & svg_width & " " & svg_height & "' xmlns='http://www.w3.org/2000/svg'>" &
+			    "<defs>" &
+			        "<linearGradient id='" & grad_id & "' x1='0' y1='0' x2='0' y2='1'>" &
+			            "<stop offset='0%' stop-color='"& gradient_color &"' stop-opacity='0.6'/>" &
+			            "<stop offset='100%' stop-color='"& gradient_color &"' stop-opacity='0'/>" &
+			        "</linearGradient>" &
+			    "</defs>" &
+			    "<polygon fill='url(#" & grad_id & ")' points='" & PolygonPoints & "' />" &
+			    "<polyline fill='none' stroke='" & stroke_color & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" & PolylinePoints & "' />" &
+			    "</svg>"
+			
+			RETURN
+			    IF(TotalPoints < 2, BLANK(), "data:image/svg+xml;utf8," & Svg)
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: fd9600e3-101b-442a-848b-9a5dac1e79a4
+		dataCategory: ImageUrl
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Sparkline SVG com gradiente da Despesa Orçamentária Empenhada (últimos 5 anos).
+	measure 'Despesa Orcamentaria Empenhada Sparkline SVG' = ```
+			VAR svg_width = 150  -- Control width
+			VAR svg_height = 50  -- Control height
+			VAR stroke_color = "#4F46E5" --Control Sparkline Stroke Color
+			VAR gradient_color = "#C7D2FE" --Control Sparkline Gradient Color
+			VAR grad_id = "grad_desp"
+			
+			VAR vAnoMax = MAX(dCalendario[ano])
+			VAR vAnoMin = vAnoMax - 4
+			
+			VAR InputTable =  -- Input Columns
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            SUMMARIZECOLUMNS(
+			                dCalendario[ano],
+			                "Y", [Despesa Orcamentaria Empenhada]
+			            ),
+			            "X", dCalendario[ano],
+			            "Y", [Y]
+			        ),
+			        REMOVEFILTERS(dCalendario),
+			        dCalendario[ano] >= vAnoMin && dCalendario[ano] <= vAnoMax
+			    )
+			
+			VAR NonBlankData =
+			    ADDCOLUMNS(
+			        InputTable,
+			        "Y_Adj", IF(ISBLANK([Y]), 0, [Y])
+			    )
+			
+			VAR RankedData =
+			    ADDCOLUMNS(
+			        NonBlankData,
+			        "X_Rank", RANKX(NonBlankData, [X], , ASC)
+			    )
+			
+			VAR TotalPoints = COUNTROWS(RankedData)
+			VAR MaxIndex = TotalPoints - 1
+			VAR SpacedPoints =
+			    ADDCOLUMNS(
+			        RankedData,
+			        "XPos", 
+			            IF(MaxIndex <= 0, svg_width * 0.5, DIVIDE(([X_Rank] - 1), MaxIndex) * svg_width)
+			    )
+			
+			VAR MinY = MINX(SpacedPoints, [Y_Adj])
+			VAR MaxY = MAXX(SpacedPoints, [Y_Adj])
+			
+			VAR PointsWithYPos =
+			    ADDCOLUMNS(
+			        SpacedPoints,
+			        "YPos",
+			        IF(
+			            MaxY = MinY,
+			            svg_height * 0.5,
+			            svg_height - 6 - DIVIDE([Y_Adj] - MinY, MaxY - MinY) * (svg_height - 12)
+			        )
+			    )
+			
+			VAR PolylinePoints =
+			    CONCATENATEX(
+			        PointsWithYPos,
+			        SUBSTITUTE(FORMAT([XPos], "0.0"), ",", ".") & "," & SUBSTITUTE(FORMAT([YPos], "0.0"), ",", "."),
+			        " ",
+			        [X],
+			        ASC
+			    )
+			
+			VAR FirstX = SUBSTITUTE(FORMAT(MINX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR LastX = SUBSTITUTE(FORMAT(MAXX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR PolygonPoints =
+			    FirstX & "," & svg_height & " " & PolylinePoints & " " & LastX & "," & svg_height
+			
+			VAR Svg =
+			    "<svg width='" & svg_width & "' height='" & svg_height & "' viewBox='0 0 " & svg_width & " " & svg_height & "' xmlns='http://www.w3.org/2000/svg'>" &
+			    "<defs>" &
+			        "<linearGradient id='" & grad_id & "' x1='0' y1='0' x2='0' y2='1'>" &
+			            "<stop offset='0%' stop-color='"& gradient_color &"' stop-opacity='0.6'/>" &
+			            "<stop offset='100%' stop-color='"& gradient_color &"' stop-opacity='0'/>" &
+			        "</linearGradient>" &
+			    "</defs>" &
+			    "<polygon fill='url(#" & grad_id & ")' points='" & PolygonPoints & "' />" &
+			    "<polyline fill='none' stroke='" & stroke_color & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" & PolylinePoints & "' />" &
+			    "</svg>"
+			
+			RETURN
+			    IF(TotalPoints < 2, BLANK(), "data:image/svg+xml;utf8," & Svg)
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 612ff321-309f-48fe-902f-07e15e5dee7d
+		dataCategory: ImageUrl
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	/// Sparkline SVG com gradiente da Receita Corrente Líquida Vigente (últimos 5 anos).
+	measure 'RCL Vigente Sparkline SVG' = ```
+			VAR svg_width = 150  -- Control width
+			VAR svg_height = 50  -- Control height
+			VAR stroke_color = "#059669" --Control Sparkline Stroke Color
+			VAR gradient_color = "#A7F3D0" --Control Sparkline Gradient Color
+			VAR grad_id = "grad_rcl"
+			
+			VAR vAnoMax = MAX(dCalendario[ano])
+			VAR vAnoMin = vAnoMax - 4
+			
+			VAR InputTable =  -- Input Columns
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            SUMMARIZECOLUMNS(
+			                dCalendario[ano],
+			                "Y", [RCL Vigente]
+			            ),
+			            "X", dCalendario[ano],
+			            "Y", [Y]
+			        ),
+			        REMOVEFILTERS(dCalendario),
+			        dCalendario[ano] >= vAnoMin && dCalendario[ano] <= vAnoMax
+			    )
+			
+			VAR NonBlankData =
+			    ADDCOLUMNS(
+			        InputTable,
+			        "Y_Adj", IF(ISBLANK([Y]), 0, [Y])
+			    )
+			
+			VAR RankedData =
+			    ADDCOLUMNS(
+			        NonBlankData,
+			        "X_Rank", RANKX(NonBlankData, [X], , ASC)
+			    )
+			
+			VAR TotalPoints = COUNTROWS(RankedData)
+			VAR MaxIndex = TotalPoints - 1
+			VAR SpacedPoints =
+			    ADDCOLUMNS(
+			        RankedData,
+			        "XPos", 
+			            IF(MaxIndex <= 0, svg_width * 0.5, DIVIDE(([X_Rank] - 1), MaxIndex) * svg_width)
+			    )
+			
+			VAR MinY = MINX(SpacedPoints, [Y_Adj])
+			VAR MaxY = MAXX(SpacedPoints, [Y_Adj])
+			
+			VAR PointsWithYPos =
+			    ADDCOLUMNS(
+			        SpacedPoints,
+			        "YPos",
+			        IF(
+			            MaxY = MinY,
+			            svg_height * 0.5,
+			            svg_height - 6 - DIVIDE([Y_Adj] - MinY, MaxY - MinY) * (svg_height - 12)
+			        )
+			    )
+			
+			VAR PolylinePoints =
+			    CONCATENATEX(
+			        PointsWithYPos,
+			        SUBSTITUTE(FORMAT([XPos], "0.0"), ",", ".") & "," & SUBSTITUTE(FORMAT([YPos], "0.0"), ",", "."),
+			        " ",
+			        [X],
+			        ASC
+			    )
+			
+			VAR FirstX = SUBSTITUTE(FORMAT(MINX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR LastX = SUBSTITUTE(FORMAT(MAXX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR PolygonPoints =
+			    FirstX & "," & svg_height & " " & PolylinePoints & " " & LastX & "," & svg_height
+			
+			VAR Svg =
+			    "<svg width='" & svg_width & "' height='" & svg_height & "' viewBox='0 0 " & svg_width & " " & svg_height & "' xmlns='http://www.w3.org/2000/svg'>" &
+			    "<defs>" &
+			        "<linearGradient id='" & grad_id & "' x1='0' y1='0' x2='0' y2='1'>" &
+			            "<stop offset='0%' stop-color='"& gradient_color &"' stop-opacity='0.6'/>" &
+			            "<stop offset='100%' stop-color='"& gradient_color &"' stop-opacity='0'/>" &
+			        "</linearGradient>" &
+			    "</defs>" &
+			    "<polygon fill='url(#" & grad_id & ")' points='" & PolygonPoints & "' />" &
+			    "<polyline fill='none' stroke='" & stroke_color & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" & PolylinePoints & "' />" &
+			    "</svg>"
+			
+			RETURN
+			    IF(TotalPoints < 2, BLANK(), "data:image/svg+xml;utf8," & Svg)
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 3032e342-bddd-4367-99c2-7868e529c0af
+		dataCategory: ImageUrl
+
+	/// Sparkline SVG com gradiente da Suficiência de Caixa Livre (últimos 5 anos).
+	measure 'Suficiencia de Caixa Livre Sparkline SVG' = ```
+			VAR svg_width = 150  -- Control width
+			VAR svg_height = 50  -- Control height
+			VAR stroke_color = "#D97706" --Control Sparkline Stroke Color
+			VAR gradient_color = "#FDE68A" --Control Sparkline Gradient Color
+			VAR grad_id = "grad_caixa"
+			
+			VAR vAnoMax = MAX(dCalendario[ano])
+			VAR vAnoMin = vAnoMax - 4
+			
+			VAR InputTable =  -- Input Columns
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            SUMMARIZECOLUMNS(
+			                dCalendario[ano],
+			                "Y", [Suficiencia de Caixa Livre]
+			            ),
+			            "X", dCalendario[ano],
+			            "Y", [Y]
+			        ),
+			        REMOVEFILTERS(dCalendario),
+			        dCalendario[ano] >= vAnoMin && dCalendario[ano] <= vAnoMax
+			    )
+			
+			VAR NonBlankData =
+			    ADDCOLUMNS(
+			        InputTable,
+			        "Y_Adj", IF(ISBLANK([Y]), 0, [Y])
+			    )
+			
+			VAR RankedData =
+			    ADDCOLUMNS(
+			        NonBlankData,
+			        "X_Rank", RANKX(NonBlankData, [X], , ASC)
+			    )
+			
+			VAR TotalPoints = COUNTROWS(RankedData)
+			VAR MaxIndex = TotalPoints - 1
+			VAR SpacedPoints =
+			    ADDCOLUMNS(
+			        RankedData,
+			        "XPos", 
+			            IF(MaxIndex <= 0, svg_width * 0.5, DIVIDE(([X_Rank] - 1), MaxIndex) * svg_width)
+			    )
+			
+			VAR MinY = MINX(SpacedPoints, [Y_Adj])
+			VAR MaxY = MAXX(SpacedPoints, [Y_Adj])
+			
+			VAR PointsWithYPos =
+			    ADDCOLUMNS(
+			        SpacedPoints,
+			        "YPos",
+			        IF(
+			            MaxY = MinY,
+			            svg_height * 0.5,
+			            svg_height - 6 - DIVIDE([Y_Adj] - MinY, MaxY - MinY) * (svg_height - 12)
+			        )
+			    )
+			
+			VAR PolylinePoints =
+			    CONCATENATEX(
+			        PointsWithYPos,
+			        SUBSTITUTE(FORMAT([XPos], "0.0"), ",", ".") & "," & SUBSTITUTE(FORMAT([YPos], "0.0"), ",", "."),
+			        " ",
+			        [X],
+			        ASC
+			    )
+			
+			VAR FirstX = SUBSTITUTE(FORMAT(MINX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR LastX = SUBSTITUTE(FORMAT(MAXX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR PolygonPoints =
+			    FirstX & "," & svg_height & " " & PolylinePoints & " " & LastX & "," & svg_height
+			
+			VAR Svg =
+			    "<svg width='" & svg_width & "' height='" & svg_height & "' viewBox='0 0 " & svg_width & " " & svg_height & "' xmlns='http://www.w3.org/2000/svg'>" &
+			    "<defs>" &
+			        "<linearGradient id='" & grad_id & "' x1='0' y1='0' x2='0' y2='1'>" &
+			            "<stop offset='0%' stop-color='"& gradient_color &"' stop-opacity='0.6'/>" &
+			            "<stop offset='100%' stop-color='"& gradient_color &"' stop-opacity='0'/>" &
+			        "</linearGradient>" &
+			    "</defs>" &
+			    "<polygon fill='url(#" & grad_id & ")' points='" & PolygonPoints & "' />" &
+			    "<polyline fill='none' stroke='" & stroke_color & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" & PolylinePoints & "' />" &
+			    "</svg>"
+			
+			RETURN
+			    IF(TotalPoints < 2, BLANK(), "data:image/svg+xml;utf8," & Svg)
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 444fcc84-f557-4af4-b795-1c3b4424f10d
+		dataCategory: ImageUrl
+
+	/// Sparkline SVG com gradiente da População do Exercício (últimos 5 anos).
+	measure 'Populacao do Exercicio Sparkline SVG' = ```
+			VAR svg_width = 150  -- Control width
+			VAR svg_height = 50  -- Control height
+			VAR stroke_color = "#9126B6" --Control Sparkline Stroke Color
+			VAR gradient_color = "#E6BCF4" --Control Sparkline Gradient Color
+			VAR grad_id = "grad_pop"
+			
+			VAR vAnoMax = MAX(dCalendario[ano])
+			VAR vAnoMin = vAnoMax - 4
+			
+			VAR InputTable =  -- Input Columns
+			    CALCULATETABLE(
+			        SELECTCOLUMNS(
+			            SUMMARIZECOLUMNS(
+			                dCalendario[ano],
+			                "Y", [Populacao do Exercicio]
+			            ),
+			            "X", dCalendario[ano],
+			            "Y", [Y]
+			        ),
+			        REMOVEFILTERS(dCalendario),
+			        dCalendario[ano] >= vAnoMin && dCalendario[ano] <= vAnoMax
+			    )
+			
+			VAR NonBlankData =
+			    ADDCOLUMNS(
+			        InputTable,
+			        "Y_Adj", IF(ISBLANK([Y]), 0, [Y])
+			    )
+			
+			VAR RankedData =
+			    ADDCOLUMNS(
+			        NonBlankData,
+			        "X_Rank", RANKX(NonBlankData, [X], , ASC)
+			    )
+			
+			VAR TotalPoints = COUNTROWS(RankedData)
+			VAR MaxIndex = TotalPoints - 1
+			VAR SpacedPoints =
+			    ADDCOLUMNS(
+			        RankedData,
+			        "XPos", 
+			            IF(MaxIndex <= 0, svg_width * 0.5, DIVIDE(([X_Rank] - 1), MaxIndex) * svg_width)
+			    )
+			
+			VAR MinY = MINX(SpacedPoints, [Y_Adj])
+			VAR MaxY = MAXX(SpacedPoints, [Y_Adj])
+			
+			VAR PointsWithYPos =
+			    ADDCOLUMNS(
+			        SpacedPoints,
+			        "YPos",
+			        IF(
+			            MaxY = MinY,
+			            svg_height * 0.5,
+			            svg_height - 6 - DIVIDE([Y_Adj] - MinY, MaxY - MinY) * (svg_height - 12)
+			        )
+			    )
+			
+			VAR PolylinePoints =
+			    CONCATENATEX(
+			        PointsWithYPos,
+			        SUBSTITUTE(FORMAT([XPos], "0.0"), ",", ".") & "," & SUBSTITUTE(FORMAT([YPos], "0.0"), ",", "."),
+			        " ",
+			        [X],
+			        ASC
+			    )
+			
+			VAR FirstX = SUBSTITUTE(FORMAT(MINX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR LastX = SUBSTITUTE(FORMAT(MAXX(PointsWithYPos, [XPos]), "0.0"), ",", ".")
+			VAR PolygonPoints =
+			    FirstX & "," & svg_height & " " & PolylinePoints & " " & LastX & "," & svg_height
+			
+			VAR Svg =
+			    "<svg width='" & svg_width & "' height='" & svg_height & "' viewBox='0 0 " & svg_width & " " & svg_height & "' xmlns='http://www.w3.org/2000/svg'>" &
+			    "<defs>" &
+			        "<linearGradient id='" & grad_id & "' x1='0' y1='0' x2='0' y2='1'>" &
+			            "<stop offset='0%' stop-color='"& gradient_color &"' stop-opacity='0.6'/>" &
+			            "<stop offset='100%' stop-color='"& gradient_color &"' stop-opacity='0'/>" &
+			        "</linearGradient>" &
+			    "</defs>" &
+			    "<polygon fill='url(#" & grad_id & ")' points='" & PolygonPoints & "' />" &
+			    "<polyline fill='none' stroke='" & stroke_color & "' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' points='" & PolylinePoints & "' />" &
+			    "</svg>"
+			
+			RETURN
+			    IF(TotalPoints < 2, BLANK(), "data:image/svg+xml;utf8," & Svg)
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 9a4c6eda-d29f-4c9e-8adb-60e29284c9ee
+		dataCategory: ImageUrl
+
+	measure 'Subtitulo Indicadores' = ```
+			
+			VAR vUltData = MAX(fIndicador[sk_data_fim_periodo])
+			VAR vQuantidade = 
+			    IF(
+			        ISBLANK(vUltData),
+			        BLANK(),
+			        CALCULATE(
+			            COUNTROWS(fIndicador),
+			            dCalendario[sk_data] = vUltData,
+			            fIndicador[status_limite] IN {"ALERTA", "PRUDENCIAL", "ACIMA_LIMITE"}
+			        ) + 0
+			    )
+			RETURN
+			    SWITCH(
+			        TRUE(),
+			        -- 1ª Condição: Se a data for em branco
+			        ISBLANK(vUltData), "Sem dados no período selecionado",
+			        
+			        -- 2ª Condição: Se a quantidade for zero ou vazia
+			        ISBLANK(vQuantidade) || vQuantidade = 0, "Nenhum alerta fiscal",
+			        
+			        vQuantidade < 2, FORMAT(vQuantidade, "#,##0") & " Alerta Fiscal",
+			
+			        FORMAT(vQuantidade, "#,##0") & " Alertas Fiscais"
+			
+			    )
+			
+			```
+		displayFolder: 05. Variações YoY & Cartões
+		lineageTag: 4a85d397-04e1-4be8-8cde-a84d4897d79c
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Valor
+		isHidden
+		lineageTag: 113da4fa-07e7-4fcf-83be-fd0172115435
+		isNameInferred
+		sourceColumn: [Valor]
+
+	partition _Medidas = calculated
+		mode: import
+		source = ROW("Valor", 1)
+
