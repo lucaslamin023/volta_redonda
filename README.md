@@ -10,8 +10,7 @@
 Plataforma *end-to-end* de **Engenharia de Dados Governamentais** e **Business Intelligence** desenvolvida para o monitoramento contínuo da saúde financeira, conformidade legal (**LRF e Constituição Federal**) e solvência patrimonial do município de **Volta Redonda - RJ (`3306305`)**, com *benchmarking* regional frente a **5 municípios-pares fluminenses** (**Barra Mansa**, **Resende**, **Angra dos Reis**, **Petrópolis** e **Macaé**) ao longo da série histórica **2015–2026**.
 
 O sistema automatiza a extração de dados abertos oficiais da **Secretaria do Tesouro Nacional (SICONFI/STN)** e do **IBGE (SIDRA)**, processa mais de **1,06 milhão de registros** em arquitetura **Medallion (`bronze` → `silver` → `gold` → `bi`)** no PostgreSQL com bloqueio automático contra inconsistências contábeis, e abastece um modelo semântico tabular versionado em **TMDL** e publicado no **Power BI** com layout concebido no **Figma**.
-
-> **Autoria:** Desenvolvido por **Lucas Lamin**  
+  
 > **Fundamentação Contábil:** Lei nº 4.320/1964, LC nº 101/2000 (LRF), MCASP/STN e matriz de 20 quocientes econômico-financeiros aplicados ao setor público (Kohama, 2015; Aguiar, 2025).
 
 ---
