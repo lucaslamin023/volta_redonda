@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 name = "siconfi-etl"
 version = "0.1.0"
 description = "Pipeline ETL Medallion (SICONFI + IBGE -> PostgreSQL -> Power BI) para monitoramento da saude financeira municipal"
-readme = "plano_implementacao_completo_siconfi.md"
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "httpx>=0.27.0",
